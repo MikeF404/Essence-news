@@ -7,14 +7,21 @@ import React from 'react'
 import {Dialog, DialogTrigger} from "@/components/ui/dialog.tsx";
 import ArticleDialogueContent from "@/components/ArticleDialogueContent.tsx";
 
+type Article = {
+    title: string;
+    publisher_name: string;
+    src_link: string;
+    description: string;
+    image_url: string;
+};
 
 type ArticleCardProps = {
+    article: Article;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
-
 } & React.ComponentPropsWithoutRef<'div'>;
 
 export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
-    ({ onClick, ...props }, ref) => (
+    ({ article, onClick, ...props }, ref) => (
         <Dialog>
             <DialogTrigger asChild>
                 <Card className="cursor-pointer" onClick={onClick} ref={ref} {...props}>
@@ -22,10 +29,10 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                         <div className="">
 
                                 <p className="text-xl font-bold">
-                                    Article Title
+                                    {article.title}
                                 </p>
                                 <p className="text-foreground">
-                                    Publisher
+                                    {article.publisher_name}
                                 </p>
 
 
@@ -33,13 +40,13 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                         <div className="">
                             <img
                                 className="mt-3 max-h-16 rounded-xl"
-                                src="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4wwut?ver=b2fa"
+                                src={article.image_url}
                                 alt="article Image"
                             />
                         </div>
                     </div>
                     <p className="p-2 pt-0">
-                        Short Description: labore et dolore magna aliqua Ut enim ad minim veniam, quis nostrud exercitation ullamco Laboris nisi ut aliquip ex a commodo consequat.
+                        {article.description}
                     </p>
                    </Card>
             </DialogTrigger>

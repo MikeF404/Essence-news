@@ -19,7 +19,6 @@ public class ArticleService {
 
     @GetMapping
     public List<Article> getArticles(){
-
         return articleRepository.findAll();
     }
 }
