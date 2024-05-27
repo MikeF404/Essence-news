@@ -7,21 +7,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
 @RestController
-@RequestMapping(path = "home")
-
+@RequestMapping("/api/articles")
 public class ArticleController {
 
-    private final ArticleService articleService;
-
     @Autowired
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
+    private ArticleService articleService;
+
+    @GetMapping("/popular")
+    public List<Article> getPopularArticles() {
+        return articleService.getPopularArticles();
     }
 
-    @GetMapping
-    public List<Article> getArticles(){
-        return articleService.getArticles();
+    @GetMapping("/fill")
+    public String fillDBWithArticles() {
+        articleService.fillDBWithArticles();
+        return "Database filled with articles";
     }
 }

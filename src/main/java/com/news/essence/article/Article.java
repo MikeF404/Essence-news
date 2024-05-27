@@ -8,51 +8,49 @@ import java.time.LocalDateTime;
 @Table
 public class Article {
     @Id
-    @SequenceGenerator(
-            name = "article_sequence",
-            sequenceName = "article_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "article_sequence"
-    )
-
-    private Long article_id;
+    private long uri;
+    private LocalDateTime dateTimePub;
+    private String url;
     private String title;
-    private String image_url;
-    private String summary;
-    private String src_link;
-    private LocalDateTime publish_date;
-    private String publisher_name;
+    private String body;
+    private String author;
+    private String sourceName;
+    private String image;
 
-    public Article() {
-    }
-
-    public Article(Long article_id, String title, String image_url, String summary, String src_link, LocalDateTime publish_date, String publisher_name) {
-        this.article_id = article_id;
+    public Article(long uri, LocalDateTime dateTimePub, String url, String title, String body, String author, String sourceName, String image) {
+        this.uri = uri;
+        this.dateTimePub = dateTimePub;
+        this.url = url;
         this.title = title;
-        this.image_url = image_url;
-        this.summary = summary;
-        this.src_link = src_link;
-        this.publish_date = publish_date;
-        this.publisher_name = publisher_name;
+        this.body = body;
+        this.author = author;
+        this.sourceName = sourceName;
+        this.image = image;
     }
-    public Article(String title, String image_url, String summary, String src_link, LocalDateTime publish_date, String publisher_name) {
-        this.title = title;
-        this.image_url = image_url;
-        this.summary = summary;
-        this.src_link = src_link;
-        this.publish_date = publish_date;
-        this.publisher_name = publisher_name;
+    public Article(){};
+
+    public long getUri() {
+        return uri;
     }
 
-    public Long getArticle_id() {
-        return article_id;
+    public void setUri(long uri) {
+        this.uri = uri;
     }
 
-    public void setArticle_id(Long article_id) {
-        this.article_id = article_id;
+    public LocalDateTime getDateTimePub() {
+        return dateTimePub;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTimePub = dateTimePub;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getTitle() {
@@ -63,56 +61,49 @@ public class Article {
         this.title = title;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public String getBody() {
+        return body;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setBody(String body) {
+        this.body = body;
     }
 
-    public String getSummary() {
-        return summary;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public String getSrc_link() {
-        return src_link;
+    public String getSourceName() {
+        return sourceName;
     }
 
-    public void setSrc_link(String src_link) {
-        this.src_link = src_link;
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 
-    public LocalDateTime getPublish_date() {
-        return publish_date;
+    public String getImage() {
+        return image;
     }
 
-    public void setPublish_date(LocalDateTime publish_date) {
-        this.publish_date = publish_date;
-    }
-
-    public String getPublisher_name() {
-        return publisher_name;
-    }
-
-    public void setPublisher_name(String publisher_name) {
-        this.publisher_name = publisher_name;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
     public String toString() {
         return "Article{" +
-                "article_id=" + article_id +
+                "uri='" + uri + '\'' +
+                ", dateTimePub=" + dateTimePub +
+                ", url='" + url + '\'' +
                 ", title='" + title + '\'' +
-                ", image_url='" + image_url + '\'' +
-                ", summary='" + summary + '\'' +
-                ", src_link='" + src_link + '\'' +
-                ", publish_date=" + publish_date +
-                ", publisher_name='" + publisher_name + '\'' +
+                ", body='" + body + '\'' +
+                ", author='" + author + '\'' +
+                ", sourceName='" + sourceName + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }
