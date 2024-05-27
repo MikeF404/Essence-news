@@ -40,7 +40,7 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                         <div className="">
                             <img
                                 className="mt-3 max-h-16 rounded-xl"
-                                src={article.image_url}
+                                src={article.image}
                                 alt="article Image"
                             />
                         </div>

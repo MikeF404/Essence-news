@@ -1,15 +1,14 @@
 package com.news.essence.article;
 
-import java.util.List;
-
 public class NewsApiResponse {
-    private List<Article> results;
+    private ArticleResults articles;
 
-    public List<Article> getResults() {
-        return results;
+    // Getters and setters
+    public ArticleResults getArticles() {
+        return articles;
     }
 
-    public void setResults(List<Article> results) {
-        this.results = results;
+    public void setArticles(ArticleResults articles) {
+        this.articles = articles;
     }
 }

@@ -1,18 +1,21 @@
 package com.news.essence.article;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Article {
     @Id
     private long uri;
     private LocalDateTime dateTimePub;
     private String url;
     private String title;
-    private String body;
+    @Lob
+    private String body; // body will be way larger than standard 255 chars
     private String author;
     private String sourceName;
     private String image;
@@ -27,7 +30,8 @@ public class Article {
         this.sourceName = sourceName;
         this.image = image;
     }
-    public Article(){};
+    public Article() {
+    }
 
     public long getUri() {
         return uri;
