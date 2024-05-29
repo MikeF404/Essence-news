@@ -13,11 +13,13 @@ public class Article {
     private long uri;
     private LocalDateTime dateTimePub;
     private String url;
+    @Lob
     private String title;
     @Lob
     private String body; // body will be way larger than standard 255 chars
     private String author;
     private String sourceName;
+    @Lob
     private String image;
 
     public Article(long uri, LocalDateTime dateTimePub, String url, String title, String body, String author, String sourceName, String image) {
