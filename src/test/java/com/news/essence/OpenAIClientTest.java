@@ -4,21 +4,24 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.env.Environment;
 
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OpenAIClientTest {
+    private Environment env;
+
 
     @Test
     void summarize() throws Exception {
         Scanner scanner = new Scanner(System.in);
         ObjectMapper objectMapper = new ObjectMapper();
         String articleContent = "Test article content.";
-        String expectedSummary = "Promotional Summary: This is a test summary.\nDetailed Summary with bullet points:\n* Point 1\n* Point 2";
+        String expectedSummary = "<p>Test article content.</p>";
 
-        OpenAIClient openAIClient = new OpenAIClient(GptApiKey);
+        OpenAIClient openAIClient = new OpenAIClient("");
 
         JsonNode mockJsonNode = objectMapper.createObjectNode()
                 .putObject("choices")

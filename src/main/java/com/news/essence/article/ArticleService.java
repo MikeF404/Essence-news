@@ -3,6 +3,7 @@ package com.news.essence.article;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.news.essence.OpenAIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,9 +31,15 @@ public class ArticleService {
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
     @Autowired
     private ArticleRepository articleRepository;
+    private final OpenAIClient openAIClient;
+
     @Autowired
     private Environment env;
     private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    public ArticleService(Environment env) {
+        this.openAIClient = new OpenAIClient(env.getProperty("openaiapi.key"));
+    }
 
     private String getNewsApiUrl() {
         return "https://newsapi.ai/api/v1/article/getArticles";
@@ -137,5 +145,29 @@ public class ArticleService {
         }
     }
 
+    @Transactional
+    public String getArticleSummary(Long uri){
+        String output ="No article with such uri!";
+        Optional<Article> optionalArticle = articleRepository.findById(uri);
+        if(optionalArticle.isPresent()){
+            Article article = optionalArticle.get();
+            if (article.getSummary() == null){
+                String summary = summarizeArticle(article.getBody());
+                article.setSummary(summary);
+                articleRepository.save(article);
+                output = summary;
+            }
+        }
+        return output;
+    }
 
+    private String summarizeArticle(String content) {
+        try {
+            return openAIClient.summarize(content);
+        } catch (Exception e) {
+            // Handle exception
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

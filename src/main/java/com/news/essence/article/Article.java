@@ -21,6 +21,8 @@ public class Article {
     private String sourceName;
     @Lob
     private String image;
+    @Lob
+    private String summary;
 
     public Article(long uri, LocalDateTime dateTimePub, String url, String title, String body, String author, String sourceName, String image) {
         this.uri = uri;
@@ -35,6 +37,21 @@ public class Article {
     public Article() {
     }
 
+    @Override
+    public String toString() {
+        return "Article{" +
+                "uri=" + uri +
+                ", dateTimePub=" + dateTimePub +
+                ", url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", author='" + author + '\'' +
+                ", sourceName='" + sourceName + '\'' +
+                ", image='" + image + '\'' +
+                ", summary='" + summary + '\'' +
+                '}';
+    }
+
     public long getUri() {
         return uri;
     }
@@ -47,7 +64,7 @@ public class Article {
         return dateTimePub;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTimePub(LocalDateTime dateTimePub) {
         this.dateTimePub = dateTimePub;
     }
 
@@ -99,17 +116,11 @@ public class Article {
         this.image = image;
     }
 
-    @Override
-    public String toString() {
-        return "Article{" +
-                "uri='" + uri + '\'' +
-                ", dateTimePub=" + dateTimePub +
-                ", url='" + url + '\'' +
-                ", title='" + title + '\'' +
-                ", body='" + body + '\'' +
-                ", author='" + author + '\'' +
-                ", sourceName='" + sourceName + '\'' +
-                ", image='" + image + '\'' +
-                '}';
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }
