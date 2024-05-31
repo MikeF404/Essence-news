@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogTrigger} from "@/components/ui/dialog";
 import ArticleDialogueContent from "@/components/ArticleDialogueContent";
 import { Article } from "@/types/article";
+import {timeSince} from "@/utils/dateUtils.ts";
 
 type ArticleCardProps = {
     article: Article;
@@ -30,12 +31,12 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                                     {article.title}
                                 </p>
                                 <p className="text-foreground">
-                                    {article.publisher_name}
+                                    {timeSince(article.dateTimePub)}
                                 </p>
                             </div>
                             <div>
                                 <img
-                                    className="mt-3 max-h-16 rounded-xl"
+                                    className="mt-3 mb-3 max-h-16 rounded-xl"
                                     src={article.image}
                                     alt="article Image"
                                 />
