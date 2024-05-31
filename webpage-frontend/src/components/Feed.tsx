@@ -1,17 +1,16 @@
 import {ArticleCard} from "@/components/ArticleCard.tsx";
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-
+import { Article } from '../types/article';
 
 const Feed = () => {
-    const [articles, setArticles] = useState([]);
+    const [articles, setArticles] = useState<Article[]>([]);
 
 
     useEffect(() => {
         const fetchArticles = async () => {
             try{
-                const response = await axios.get('http://localhost:8080/api/articles/popular');
+                const response = await axios.get<Article[]>('http://localhost:8080/api/articles/popular');
                 setArticles(response.data);
                 console.log(response.data);
             } catch (error){

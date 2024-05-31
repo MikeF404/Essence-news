@@ -1,58 +1,52 @@
-
 import {
     Card,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
-import React from 'react'
-import {Dialog, DialogTrigger} from "@/components/ui/dialog.tsx";
-import ArticleDialogueContent from "@/components/ArticleDialogueContent.tsx";
-
-type Article = {
-    title: string;
-    publisher_name: string;
-    src_link: string;
-    description: string;
-    image_url: string;
-};
+import React, { useState } from 'react';
+import { Dialog, DialogTrigger} from "@/components/ui/dialog";
+import ArticleDialogueContent from "@/components/ArticleDialogueContent";
+import { Article } from "@/types/article";
 
 type ArticleCardProps = {
     article: Article;
-    onClick?: React.MouseEventHandler<HTMLDivElement>;
 } & React.ComponentPropsWithoutRef<'div'>;
 
 export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
-    ({ article, onClick, ...props }, ref) => (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Card className="cursor-pointer" onClick={onClick} ref={ref} {...props}>
-                    <div className="flex justify-between pr-3 pl-3 items-center">
-                        <div className="">
+    ({ article, ...props }, ref) => {
+        const [isOpen, setIsOpen] = useState(false);
 
+        return (
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger asChild>
+                    <Card
+                        className="cursor-pointer"
+                        onClick={() => setIsOpen(true)}
+                        ref={ref}
+                        {...props}
+                    >
+                        <div className="flex justify-between pr-3 pl-3 items-center">
+                            <div>
                                 <p className="text-xl font-bold">
                                     {article.title}
                                 </p>
                                 <p className="text-foreground">
                                     {article.publisher_name}
                                 </p>
-
-
+                            </div>
+                            <div>
+                                <img
+                                    className="mt-3 max-h-16 rounded-xl"
+                                    src={article.image}
+                                    alt="article Image"
+                                />
+                            </div>
                         </div>
-                        <div className="">
-                            <img
-                                className="mt-3 max-h-16 rounded-xl"
-                                src={article.image}
-                                alt="article Image"
-                            />
-                        </div>
-                    </div>
-                    <p className="p-2 pt-0">
-                        {article.description}
-                    </p>
-                   </Card>
-            </DialogTrigger>
-            <ArticleDialogueContent/>
-        </Dialog>
-
-));
+                    </Card>
+                </DialogTrigger>
+                <ArticleDialogueContent key={article.uri} article={article} isOpen={isOpen} />
+            </Dialog>
+        );
+    }
+);
 
 ArticleCard.displayName = 'ArticleCard';
