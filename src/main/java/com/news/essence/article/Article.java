@@ -1,6 +1,9 @@
 package com.news.essence.article;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.news.essence.util.LongDeserializer;
+import com.news.essence.util.UriConverter;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -10,6 +13,7 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Article {
     @Id
+    @JsonDeserialize(using = LongDeserializer.class)
     private long uri;
     private LocalDateTime dateTimePub;
     private String url;
@@ -74,6 +78,11 @@ public class Article {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    //if the uri contains a digit and cannot be converted to Long directly
+    public void setUri(String uri) {
+        this.uri = UriConverter.convertStringToLong(uri);
     }
 
     public String getTitle() {

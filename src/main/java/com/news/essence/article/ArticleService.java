@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.news.essence.OpenAIClient;
+import com.news.essence.util.UriConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,8 +114,11 @@ public class ArticleService {
             return;  // Exit if the API call failed
         }
         logger.info("Payload: {}", payload);
+        /*
+
         logger.info("API Response: {}", response.getBody().toString());
         logger.info("Saving articles: {}", articles);
+         */
         articleRepository.saveAll(articles);
     }
 
@@ -144,6 +148,7 @@ public class ArticleService {
             return List.of();
         }
     }
+
 
     @Transactional
     public String getArticleSummary(Long uri){
