@@ -17,7 +17,15 @@ export const timeSince = (date: string): string => {
     if (diffInSeconds < units[2].seconds) { // Less than a day
         const hours = Math.floor(diffInSeconds / units[1].seconds);
         const minutes = Math.floor((diffInSeconds % units[1].seconds) / units[0].seconds);
-        return `${hours} hour${hours !== 1 ? 's' : ''} ${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        let result = '';
+
+        if (hours > 0) {
+            result += `${hours} hour${hours !== 1 ? 's' : ''} `;
+        }
+
+        result += `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+
+        return result.trim();
     }
 
     for (let i = units.length - 1; i >= 0; i--) {
@@ -29,4 +37,5 @@ export const timeSince = (date: string): string => {
     }
 
     return `${diffInSeconds} second${diffInSeconds !== 1 ? 's' : ''} ago`;
+
 };

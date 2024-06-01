@@ -4,6 +4,9 @@ import './ArticleDialogueContent.css'; // Without it - most tags (like <h1> or <
 import { Article } from "@/types/article";
 import axios from 'axios';
 import { useEffect, useState } from "react";
+import {getURLDomain} from "@/utils/getURLDomain.ts";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 type ArticleDialogueContentProps = {
     article: Article;
@@ -38,10 +41,41 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
         <DialogContent className="max-w-4xl sm:w-[90%] md:w-[75%] lg:w-[66%]">
             <DialogHeader>
                 <DialogTitle>{article.title}</DialogTitle>
-                <DialogDescription>{article.publisher_name}</DialogDescription>
+                <DialogDescription>Source: {getURLDomain(article.url)}</DialogDescription>
             </DialogHeader>
             {loading ? (
-                <p>Summarizing the article...</p>
+                <div>
+                    <p>[summarizing the article using ChatGPT. It might take about 4 seconds]</p>
+                    <div className="flex flex-col space-y-4">
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-[90%]" />
+                            <Skeleton className="h-4 w-[76%]" />
+                            <Skeleton className="h-4 w-[87%]" />
+                            <Skeleton className="h-4 w-[89%]" />
+                        </div>
+                        <ul className="ml-4 space-x-2 flex flex-row">
+                            <div className="mt-1 space-y-4">
+                                <Skeleton className="h-2 w-2" />
+                                <Skeleton className="h-2 w-2" />
+                                <Skeleton className="h-2 w-2" />
+
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-[250px]" />
+                                <Skeleton className="h-4 w-[250px]" />
+                                <Skeleton className="h-4 w-[200px]" />
+
+                            </div>
+
+                        </ul>
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-[80%]" />
+                            <Skeleton className="h-4 w-[87%]" />
+                            <Skeleton className="h-4 w-[60%]" />
+                        </div>
+                    </div>
+                </div>
+
             ) : (
                 <div className="dialogue-content" dangerouslySetInnerHTML={{ __html: summary || '' }} />
             )}

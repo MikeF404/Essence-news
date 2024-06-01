@@ -39,7 +39,7 @@ public class OpenAIClient {
 
         // Construct the JSON request payload
         JSONObject jsonPayload = new JSONObject();
-        jsonPayload.put("model", "gpt-4");
+        jsonPayload.put("model", "gpt-4o");
         jsonPayload.put("temperature", 1);
         jsonPayload.put("max_tokens", 256);
         jsonPayload.put("top_p", 1);

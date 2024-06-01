@@ -4,7 +4,7 @@ function App() {
 
 
   return (
-    <div className="p-20 flex justify-center bg-amber-100">
+    <div className="p-20 flex justify-center bg-accent">
         <Header />
         <Feed/>
     </div>
