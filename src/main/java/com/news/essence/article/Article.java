@@ -1,10 +1,13 @@
 package com.news.essence.article;
 
+import com.news.essence.category.Category;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.news.essence.util.LongDeserializer;
 import com.news.essence.util.UriConverter;
 import jakarta.persistence.*;
+import java.util.Set;
+import java.util.HashSet;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +30,14 @@ public class Article {
     private String image;
     @Lob
     private String summary;
+
+    @ManyToMany
+    @JoinTable(
+            name = "article_category",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
 
     public Article(long uri, LocalDateTime dateTimePub, String url, String title, String body, String author, String sourceName, String image) {
         this.uri = uri;
