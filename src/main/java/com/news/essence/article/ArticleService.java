@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.news.essence.OpenAIClient;
-import com.news.essence.util.UriConverter;
+import com.news.essence.category.Category;
+import com.news.essence.category.CategoryDto;
+import com.news.essence.category.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +23,18 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.news.essence.util.CategoryUtils.simplifyCategory;
 
 @Service
 public class ArticleService {
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
     private final OpenAIClient openAIClient;
 
     @Autowired
@@ -137,7 +140,8 @@ public class ArticleService {
             NewsApiResponse response = objectMapper.readValue(jsonData, NewsApiResponse.class);
             if (response != null && response.getArticles() != null) {
                 return response.getArticles().getResults().stream()
-                        .filter(article -> !articleRepository.existsById(article.getUri()))
+                        .filter(articleDto -> !articleRepository.existsById(articleDto.getUri()))
+                        .map(this::mapToEntity)
                         .collect(Collectors.toList());
             } else {
                 logger.error("No articles found in the JSON data.");
@@ -147,6 +151,33 @@ public class ArticleService {
             logger.error("Error processing JSON data", e);
             return List.of();
         }
+    }
+
+    private Article mapToEntity(ArticleDto articleDto) {
+        Article article = new Article();
+        article.setTitle(articleDto.getTitle());
+        article.setUrl(articleDto.getUrl());
+        article.setImage(articleDto.getImage());
+        article.setSummary(articleDto.getSummary());
+        article.setDateTimePub(articleDto.getDateTimePub());
+        article.setUri(articleDto.getUri());
+        article.setBody(articleDto.getBody());
+
+        Set<Category> categories = new HashSet<>();
+        for (CategoryDto categoryDto : articleDto.getCategories()) {
+            String simplifiedCategoryName = simplifyCategory(categoryDto.getUri());
+            Category category = categoryRepository.findByName(simplifiedCategoryName);
+            if (category == null) {
+                category = new Category();
+                category.setName(simplifiedCategoryName);
+                category.setParentName(simplifiedCategoryName.split("/")[0]); // Assuming the first part as parent
+                categoryRepository.save(category);
+            }
+            categories.add(category);
+        }
+        article.setCategories(categories);
+
+        return article;
     }
 
 

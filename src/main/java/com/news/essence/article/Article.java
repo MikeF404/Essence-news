@@ -8,6 +8,7 @@ import com.news.essence.util.UriConverter;
 import jakarta.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 
@@ -31,12 +32,15 @@ public class Article {
     @Lob
     private String summary;
 
+
+
     @ManyToMany
     @JoinTable(
             name = "article_category",
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+    @JsonManagedReference
     private Set<Category> categories = new HashSet<>();
 
     public Article(long uri, LocalDateTime dateTimePub, String url, String title, String body, String author, String sourceName, String image) {
@@ -142,5 +146,13 @@ public class Article {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 }

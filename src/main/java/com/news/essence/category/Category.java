@@ -1,16 +1,18 @@
 package com.news.essence.category;
 
 import com.news.essence.article.Article;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import org.springframework.data.annotation.Id;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
+@Table
 public class Category {
 
     @Id
@@ -21,6 +23,7 @@ public class Category {
     private String parentName; // Parent category name
 
     @ManyToMany(mappedBy = "categories")
+    @JsonBackReference
     private Set<Article> articles = new HashSet<>();
 
     // Getters and Setters
