@@ -26,8 +26,8 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                         ref={ref}
                         {...props}
                     >
-                        <div className="flex justify-between pr-3 pl-3 items-center">
-                            <div>
+                        <div className="flex justify-between items-center ">
+                            <div className="px-3 ">
                                 <p className="text-xl font-bold">
                                     {article.title}
                                 </p>
@@ -38,11 +38,11 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                                     {timeSince(article.dateTimePub)}
                                 </p>
                             </div>
-                            <div>
+                            <div className="">
                                 {
                                     (article.image) &&
                                         <img
-                                            className="mt-3 mb-3 max-h-16 rounded-xl"
+                                            className="max-w-44 max-h-32 rounded-xl"
                                             src={article.image}
                                             alt="article Image"
                                         />

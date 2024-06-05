@@ -43,6 +43,18 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
                 <DialogTitle>{article.title}</DialogTitle>
                 <DialogDescription>Source: {getURLDomain(article.url)}</DialogDescription>
             </DialogHeader>
+            {
+                (article.image) &&
+                <div className="flex mx-auto w-full h-60 my-[-1em] rounded-xl justify-center">
+
+                    <img
+                        className="rounded-xl border-4 "
+                        src={article.image}
+                        alt="article Image"
+                    />
+                </div>
+                }
+
             {loading ? (
                 <div>
                     <p>[summarizing the article using ChatGPT. It might take about 4 seconds]</p>
@@ -80,6 +92,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
                 <div className="dialogue-content" dangerouslySetInnerHTML={{ __html: summary || '' }} />
             )}
             <DialogFooter className="">
+
                 <div className="flex flex-wrap gap-x-2 gap-y-1 justify-between w-full">
                     <a href={article.url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-fit w-full md:w-auto">
                         <Button className="w-full">Read the Source</Button>

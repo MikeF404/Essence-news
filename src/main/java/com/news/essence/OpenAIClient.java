@@ -35,13 +35,13 @@ public class OpenAIClient {
 
     public String summarize(String content) throws IOException, JSONException {
         String url = "https://api.openai.com/v1/chat/completions";
-        String prompt = "Summarize the news article that enters after. If possible, include bullet points. Try to keep it simple and engaging. The output must be only the summary, and it must be formatted in HTML tags. Do not include header. Do not include the word 'summary', just the summary content with all the necessary markup tags: <h1>, <br>, <ul>, and so on. Do not include title. Make sure you do not include unnecessary empty new lines. Ideally, the output should contain a paragraph of text, a couple of bullet points, and a concluding paragraph of text. However, you can adjust it to make the summary better";
+        String prompt = "Write a concise summary for the following article. If possible, include bullet points to highlight key points. The output must be formatted in HTML tags. Important guidelines: 1. Do not include the article title or any headers. 2. Do not use the word 'summary'; only include the summary content. 3. Avoid unnecessary empty lines. 4. Include a paragraph of text, followed by a couple of bullet points, and conclude with another paragraph of text. Ensure the summary is simple, engaging, and well-formatted.";
 
         // Construct the JSON request payload
         JSONObject jsonPayload = new JSONObject();
         jsonPayload.put("model", "gpt-4o");
         jsonPayload.put("temperature", 1);
-        jsonPayload.put("max_tokens", 256);
+        jsonPayload.put("max_tokens", 350);
         jsonPayload.put("top_p", 1);
         jsonPayload.put("frequency_penalty", 0);
         jsonPayload.put("presence_penalty", 0);
