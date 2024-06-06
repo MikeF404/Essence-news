@@ -69,6 +69,15 @@ public class ArticleService {
         queryMap.put("$query", queryInner);
         queryMap.put("$filter", filter);
 
+
+        queryMap.put("ignoreSourceUri", List.of("exbulletin.com",
+                "cepr.org",
+                "tradingview.com",
+                "newsdrum.in",
+                "it.marketscreener.com",
+                "agenceurope.eu",
+                "bankingtimes.co.uk"));
+
         query.put("action", "getArticles");
         query.put("query", queryMap);
         query.put("resultType", "articles");
