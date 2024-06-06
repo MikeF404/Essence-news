@@ -54,42 +54,50 @@ public class ArticleService {
         LocalDate previousDate = currentDate.minusDays(1);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        Map<String, Object> query = new HashMap<>();
         Map<String, Object> queryInner = new HashMap<>();
         queryInner.put("dateStart", previousDate.format(formatter));
         queryInner.put("dateEnd", currentDate.format(formatter));
         queryInner.put("lang", "eng");
+
+        // Correctly including ignoreSourceUri within queryInner
+        queryInner.put("ignoreSourceUri", List.of(
+                "exbulletin.com",
+                "cepr.org",
+                "www.tradingview.com",
+                "www.newsdrum.in",
+                "it.marketscreener.com",
+                "agenceurope.eu",
+                "bankingtimes.co.uk",
+                "ndtvprofit.com",
+                "www.esdelatino.com",
+                "www.czso.cz"
+        ));
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("$query", queryInner);
 
         Map<String, Object> filter = new HashMap<>();
         filter.put("startSourceRankPercentile", 90);
         filter.put("endSourceRankPercentile", 100);
         filter.put("isDuplicate", "skipDuplicates");
 
-        Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("$query", queryInner);
-        queryMap.put("$filter", filter);
+        query.put("$filter", filter);
 
-
-        queryMap.put("ignoreSourceUri", List.of("exbulletin.com",
-                "cepr.org",
-                "tradingview.com",
-                "newsdrum.in",
-                "it.marketscreener.com",
-                "agenceurope.eu",
-                "bankingtimes.co.uk"));
-
-        query.put("action", "getArticles");
-        query.put("query", queryMap);
-        query.put("resultType", "articles");
-        query.put("articlesSortBy", "date");
-        query.put("includeArticleSocialScore", true);
-        query.put("includeArticleCategories", true);
-        query.put("includeArticleImage", true);
-        query.put("includeArticleOriginalArticle", true);
-        query.put("includeSourceTitle", false);
-        query.put("apiKey", env.getProperty("newsapi.key"));
-       return query;
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("action", "getArticles");
+        payload.put("query", query);
+        payload.put("resultType", "articles");
+        payload.put("articlesSortBy", "date");
+        payload.put("includeArticleSocialScore", true);
+        payload.put("includeArticleCategories", true);
+        payload.put("includeArticleImage", true);
+        payload.put("includeArticleOriginalArticle", true);
+        payload.put("includeSourceTitle", false);
+        payload.put("apiKey", env.getProperty("newsapi.key"));
+        return payload;
     }
+
+
 
     @Transactional
     public List<Article> getPopularArticles() {
@@ -148,8 +156,25 @@ public class ArticleService {
 
             NewsApiResponse response = objectMapper.readValue(jsonData, NewsApiResponse.class);
             if (response != null && response.getArticles() != null) {
+                // Exclude unwanted sources after fetching the data
+                Set<String> blacklistedUrls = Set.of(
+                        "exbulletin.com",
+                        "cepr.org",
+                        "www.tradingview.com",
+                        "www.newsdrum.in",
+                        "it.marketscreener.com",
+                        "agenceurope.eu",
+                        "bankingtimes.co.uk",
+                        "ndtvprofit.com",
+                        "www.esdelatino.com",
+                        "www.czso.cz",
+                        "farmersweekly.co.za",
+                        "investegate.co.uk"
+                );
+
                 return response.getArticles().getResults().stream()
                         .filter(articleDto -> !articleRepository.existsById(articleDto.getUri()))
+                        .filter(articleDto -> blacklistedUrls.stream().noneMatch(articleDto.getUrl()::contains))
                         .map(this::mapToEntity)
                         .collect(Collectors.toList());
             } else {
