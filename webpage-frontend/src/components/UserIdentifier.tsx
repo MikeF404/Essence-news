@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const UserIdentifier: React.FC = () => {
     useEffect(() => {
@@ -7,9 +7,10 @@ const UserIdentifier: React.FC = () => {
             let userId = localStorage.getItem('user_id');
             if (!userId) {
                 userId = uuidv4();
-                localStorage.setItem('user_id', userId);
+                if (userId != undefined) localStorage.setItem('user_id', userId);
             }
-            return userId;
+            if (userId != undefined) return userId;
+            return "Error generating uuid"
         };
 
         const userId = getUserId();

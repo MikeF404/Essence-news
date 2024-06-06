@@ -97,9 +97,10 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
                     <a href={article.url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-fit w-full md:w-auto">
                         <Button className="w-full">Read the Source</Button>
                     </a>
-                    <Button className="flex-1 min-w-fit w-full md:w-auto">More Articles like this</Button>
-                    <Button className="flex-1 min-w-fit w-full md:w-auto">Less Articles like this</Button>
                     <Button className="flex-1 min-w-fit w-full md:w-auto">Share</Button>
+                    <Button className="flex-1 min-w-fit w-full md:w-auto">More like this</Button>
+                    <Button className="flex-1 min-w-fit w-full md:w-auto">Less like this</Button>
+
                 </div>
             </DialogFooter>
         </DialogContent>

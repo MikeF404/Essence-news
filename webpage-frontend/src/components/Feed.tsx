@@ -10,7 +10,12 @@ const Feed = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try{
-                const response = await axios.get<Article[]>('http://localhost:8080/api/articles/popular');
+                const userId = localStorage.getItem('user_id') || '0';
+                const response = await axios.get<Article[]>('http://localhost:8080/api/articles/popular', {
+                    headers: {
+                        'User-ID': userId
+                    }
+                });
                 setArticles(response.data);
                 console.log(response.data);
             } catch (error){
