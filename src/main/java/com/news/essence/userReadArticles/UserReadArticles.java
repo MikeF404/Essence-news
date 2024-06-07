@@ -1,11 +1,11 @@
-package com.news.essence.userArticleInteraction;
+package com.news.essence.userReadArticles;
 import com.news.essence.article.Article;
 import com.news.essence.user.User;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_article_interaction")
-public class UserArticleInteraction {
+public class UserReadArticles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,7 +18,6 @@ public class UserArticleInteraction {
     @JoinColumn(name = "article_id")
     private Article article;
 
-    private boolean userLikedArticle;
 
     public Long getId() {
         return id;
@@ -42,13 +41,5 @@ public class UserArticleInteraction {
 
     public void setArticle(Article article) {
         this.article = article;
-    }
-
-    public boolean isUserLikedArticle() {
-        return userLikedArticle;
-    }
-
-    public void setUserLikedArticle(boolean userLikedArticle) {
-        this.userLikedArticle = userLikedArticle;
     }
 }

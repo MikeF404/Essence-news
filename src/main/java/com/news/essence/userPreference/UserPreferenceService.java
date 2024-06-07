@@ -26,21 +26,22 @@ public class UserPreferenceService {
     @Autowired
     private ArticleRepository articleRepository;
 
-    public UserPreference findUserPreference(Long userId, Long categoryId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
-        return userPreferenceRepository.findByUserAndCategory(user, category);
-    }
-
     public List<UserPreference> findUserPreferences(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return userPreferenceRepository.findByUser(user);
     }
 
     @Transactional
-    public void updateUserPreference(Long userId, Long articleId, boolean userLikedArticle) {
+    public void updateUserPreference(Long userId, Long articleId, String interactionType) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new RuntimeException("Article not found"));
+
+        float increment = switch (interactionType) {
+            case "read" -> 0.2f;
+            case "moreLikeThis" -> 0.5f;
+            case "lessLikeThis" -> -1.0f;
+            default -> 0;
+        };
 
         for (Category category : article.getCategories()) {
             UserPreference userPreference = userPreferenceRepository.findByUserAndCategory(user, category);
@@ -50,14 +51,9 @@ public class UserPreferenceService {
                 userPreference.setCategory(category);
                 userPreference.setPreferenceScore(0.0f);
             }
-
-            if (userLikedArticle) {
-                userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.5f);
-            } else {
-                userPreference.setPreferenceScore(userPreference.getPreferenceScore() - 0.5f);
-            }
-
+            userPreference.setPreferenceScore(userPreference.getPreferenceScore() + increment);
             userPreferenceRepository.save(userPreference);
         }
     }
 }
+

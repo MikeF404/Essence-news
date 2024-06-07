@@ -19,11 +19,17 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
 
     useEffect(() => {
         const fetchSummary = async () => {
+            const userId = localStorage.getItem('user_id');
             if (!article.summary && isOpen) {
                 setLoading(true);
                 try {
                     console.log("Requesting the summary from chatGPT...")
-                    const response = await axios.get<string>(`http://localhost:8080/api/articles/summary/${article.uri}`);
+                    const response = await axios.get<string>(`http://localhost:8080/api/articles/summary/${article.uri}`, {
+                        headers: {
+                            userId: userId || '',
+                        },
+                    });
+
                     setSummary(response.data);
                     article.summary = response.data;
                 } catch (error) {

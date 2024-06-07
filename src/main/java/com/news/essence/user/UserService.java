@@ -4,8 +4,8 @@ import com.news.essence.article.Article;
 import com.news.essence.article.ArticleRepository;
 import com.news.essence.category.Category;
 import com.news.essence.category.CategoryRepository;
-import com.news.essence.userArticleInteraction.UserArticleInteraction;
-import com.news.essence.userArticleInteraction.UserArticleInteractionRepository;
+import com.news.essence.userReadArticles.UserReadArticles;
+import com.news.essence.userReadArticles.UserReadArticlesRepository;
 import com.news.essence.userPreference.UserPreference;
 import com.news.essence.userPreference.UserPreferenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class UserService {
     private UserPreferenceRepository userPreferenceRepository;
 
     @Autowired
-    private UserArticleInteractionRepository userArticleInteractionRepository;
+    private UserReadArticlesRepository userArticleInteractionRepository;
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -62,12 +62,27 @@ public class UserService {
         }
     }
 
+    // if user read the article without providing a response
+    @Transactional
+    public void updateUserPreference(User user, Article article) {
+        for (Category category : article.getCategories()) {
+            UserPreference userPreference = userPreferenceRepository.findByUserAndCategory(user, category);
+            if (userPreference == null) {
+                userPreference = new UserPreference();
+                userPreference.setUser(user);
+                userPreference.setCategory(category);
+            }
+            userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.2f);
+            userPreferenceRepository.save(userPreference);
+        }
+    }
+
     @Transactional
     public void logUserInteraction(User user, Article article, boolean userLikedArticle) {
-        UserArticleInteraction interaction = new UserArticleInteraction();
+        UserReadArticles interaction = new UserReadArticles();
         interaction.setUser(user);
         interaction.setArticle(article);
-        interaction.setUserLikedArticle(userLikedArticle);
+        //interaction.setUserLikedArticle(userLikedArticle);
         userArticleInteractionRepository.save(interaction);
         updateUserPreference(user, article, userLikedArticle);
     }

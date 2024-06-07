@@ -7,7 +7,6 @@ import com.news.essence.OpenAIClient;
 import com.news.essence.category.Category;
 import com.news.essence.category.CategoryDto;
 import com.news.essence.category.CategoryRepository;
-import com.news.essence.user.User;
 import com.news.essence.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,7 +62,7 @@ public class ArticleService {
         queryInner.put("dateEnd", currentDate.format(formatter));
         queryInner.put("lang", "eng");
 
-        // Correctly including ignoreSourceUri within queryInner
+        // Doesn't really work for some reason
         queryInner.put("ignoreSourceUri", List.of(
                 "exbulletin.com",
                 "cepr.org",
@@ -108,8 +108,8 @@ public class ArticleService {
         Article latestArticle = articleRepository.findTopByOrderByDateTimePubDesc();
         LocalDateTime lastUpdate = latestArticle != null ? latestArticle.getDateTimePub() : LocalDateTime.MIN;
 
-        // If the last update was more than 24 hours ago, fetch fresh articles
-        if (lastUpdate.isBefore(LocalDateTime.now().minusHours(24))) {
+        // If the last update was more than 12 hours ago, fetch fresh articles
+        if (ChronoUnit.HOURS.between(lastUpdate, LocalDateTime.now()) > 12) {
             fetchAndStoreArticles();
         }
 
@@ -219,16 +219,13 @@ public class ArticleService {
 
 
     @Transactional
-    public String getArticleSummary(Long uri, Long id){
+    public String getArticleSummary(Long uri){
         String output ="No article with such uri!";
         Optional<Article> optionalArticle = articleRepository.findById(uri);
 
         if(optionalArticle.isPresent()){
             Article article = optionalArticle.get();
-            if (id != null) {
-                User user = userService.findUserById(id);
-                userService.updateUserPreference(user, article, true);
-            }
+
             if (article.getSummary() == null){
                 String summary = summarizeArticle(article.getBody());
                 article.setSummary(summary);

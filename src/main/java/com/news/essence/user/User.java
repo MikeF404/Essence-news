@@ -1,6 +1,6 @@
 package com.news.essence.user;
 
-import com.news.essence.userArticleInteraction.UserArticleInteraction;
+import com.news.essence.userReadArticles.UserReadArticles;
 import com.news.essence.userPreference.UserPreference;
 import jakarta.persistence.*;
 
@@ -18,7 +18,7 @@ public class User {
     private Set<UserPreference> preferences;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserArticleInteraction> interactions;
+    private Set<UserReadArticles> readArticles;
 
     public Long getId() {
         return id;
@@ -37,11 +37,11 @@ public class User {
         this.preferences = preferences;
     }
 
-    public Set<UserArticleInteraction> getInteractions() {
-        return interactions;
+    public Set<UserReadArticles> getReadArticles() {
+        return readArticles;
     }
 
-    public void setInteractions(Set<UserArticleInteraction> interactions) {
-        this.interactions = interactions;
+    public void setReadArticles(Set<UserReadArticles> readArticles) {
+        this.readArticles = readArticles;
     }
 }
