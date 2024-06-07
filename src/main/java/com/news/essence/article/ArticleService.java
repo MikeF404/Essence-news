@@ -7,6 +7,8 @@ import com.news.essence.OpenAIClient;
 import com.news.essence.category.Category;
 import com.news.essence.category.CategoryDto;
 import com.news.essence.category.CategoryRepository;
+import com.news.essence.user.User;
+import com.news.essence.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,8 @@ public class ArticleService {
     @Autowired
     private CategoryRepository categoryRepository;
     private final OpenAIClient openAIClient;
-
+    @Autowired
+    private UserService userService;
     @Autowired
     private Environment env;
     private final RestTemplate restTemplate = new RestTemplate();
@@ -204,7 +207,7 @@ public class ArticleService {
             if (category == null) {
                 category = new Category();
                 category.setName(simplifiedCategoryName);
-                category.setParentName(simplifiedCategoryName.split("/")[0]); // Assuming the first part as parent
+                category.setParentName(simplifiedCategoryName.split("/")[0]);
                 categoryRepository.save(category);
             }
             categories.add(category);
@@ -216,18 +219,26 @@ public class ArticleService {
 
 
     @Transactional
-    public String getArticleSummary(Long uri){
+    public String getArticleSummary(Long uri, Long id){
         String output ="No article with such uri!";
         Optional<Article> optionalArticle = articleRepository.findById(uri);
+
         if(optionalArticle.isPresent()){
             Article article = optionalArticle.get();
+            if (id != null) {
+                User user = userService.findUserById(id);
+                userService.updateUserPreference(user, article, true);
+            }
             if (article.getSummary() == null){
                 String summary = summarizeArticle(article.getBody());
                 article.setSummary(summary);
+                article.setBody(null); // we don't need the body anymore - so we remove it to save space
+                article.setViewCount(article.getViewCount()+1);
                 articleRepository.save(article);
                 output = summary;
             }
         }
+
         return output;
     }
 

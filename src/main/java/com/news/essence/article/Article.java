@@ -32,7 +32,7 @@ public class Article {
     @Lob
     private String summary;
 
-
+    private int viewCount = 0;
 
     @ManyToMany
     @JoinTable(
@@ -154,5 +154,13 @@ public class Article {
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
     }
 }

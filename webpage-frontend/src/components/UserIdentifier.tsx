@@ -1,20 +1,32 @@
 import React, { useEffect } from 'react';
-import { v4 as uuidv4 } from "uuid";
+import axios from 'axios';
+
 
 const UserIdentifier: React.FC = () => {
     useEffect(() => {
-        const getUserId = (): string => {
+        const getUserId = async (): Promise<string> => {
             let userId = localStorage.getItem('user_id');
             if (!userId) {
-                userId = uuidv4();
-                if (userId != undefined) localStorage.setItem('user_id', userId);
+                try {
+                    const response = await axios.post('http://localhost:8080/api/user/create');
+                    userId = response.data.toString();
+                    if (userId) {
+                        localStorage.setItem('user_id', userId);
+                    }
+                } catch (error) {
+                    console.error('Error generating user ID:', error);
+                    return 'Error generating user ID';
+                }
             }
-            if (userId != undefined) return userId;
-            return "Error generating uuid"
+            return userId || 'Error generating user ID';
         };
 
-        const userId = getUserId();
-        console.log(`User ID: ${userId}`);
+        const fetchUserId = async () => {
+            const userId = await getUserId();
+            console.log(`User ID: ${userId}`);
+        };
+
+        fetchUserId();
     }, []);
 
     return null;

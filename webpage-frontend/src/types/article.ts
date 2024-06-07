@@ -7,4 +7,5 @@ export type Article = {
     uri: number;
     publisher: string;
     dateTimePub: string;
+    viewCount: number;
 };

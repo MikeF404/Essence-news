@@ -8,6 +8,7 @@ import ArticleDialogueContent from "@/components/ArticleDialogueContent";
 import { Article } from "@/types/article";
 import {timeSince} from "@/utils/dateUtils.ts";
 import {getURLDomain} from "@/utils/getURLDomain.ts";
+import {Eye} from "lucide-react";
 
 type ArticleCardProps = {
     article: Article;
@@ -34,9 +35,17 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                                 <p className="text-foreground">
                                     {getURLDomain(article.url)}
                                 </p>
-                                <p className="text-foreground">
-                                    {timeSince(article.dateTimePub)}
-                                </p>
+                                <div className="text-foreground flex gap-3">
+                                    <div className="flex">
+                                        <Eye /> {article.viewCount}
+                                    </div>
+                                    <p>
+                                        {timeSince(article.dateTimePub)}
+                                    </p>
+
+                                </div>
+
+
                             </div>
                             <div className="">
                                 {

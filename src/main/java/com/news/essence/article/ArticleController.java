@@ -1,10 +1,7 @@
 package com.news.essence.article;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,8 +24,8 @@ public class ArticleController {
     }
 
     @GetMapping("/summary/{uri}")
-    public String getSummary(@PathVariable Long uri){
+    public String getSummary(@PathVariable Long uri, @RequestHeader(value = "id", required = false) Long id){
 
-        return articleService.getArticleSummary(uri);
+        return articleService.getArticleSummary(uri, id);
     }
 }

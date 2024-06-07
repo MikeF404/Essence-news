@@ -1,13 +1,13 @@
 package com.news.essence.user;
 
 public class UserDto {
-    private String userId;
+    private Long id;
 
-    public String getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 }
