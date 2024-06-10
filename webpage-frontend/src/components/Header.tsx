@@ -36,14 +36,17 @@ const Header = () => {
                 <div className="flex font-bold italic text-3xl gap-3">
                     <img className="w-12 " src={logo} alt="logo"/>
                     <h1>Essence News</h1>
-                    <ThemeToggle/>
-                </div>
-                <div className="gap-2 flex text-foreground">
 
-                    <Button variant="outline" >
+                </div>
+                <div className="gap-2 flex items-center">
+                    <div className="pr-3">
+
+                        <ThemeToggle/>
+                    </div>
+                    <Button variant="outline" className="border-2 border-accent bg-accent-foreground">
                         Popular
                     </Button>
-                    <Button className="" variant="outline" disabled >
+                    <Button variant="outline" className="border-2 border-accent bg-accent-foreground">
                         Personalized
                     </Button>
 
