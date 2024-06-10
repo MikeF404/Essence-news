@@ -198,7 +198,6 @@ public class ArticleService {
         article.setSummary(articleDto.getSummary());
         article.setDateTimePub(articleDto.getDateTimePub());
         article.setUri(articleDto.getUri());
-        article.setBody(articleDto.getBody());
 
         Set<Category> categories = new HashSet<>();
         for (CategoryDto categoryDto : articleDto.getCategories()) {

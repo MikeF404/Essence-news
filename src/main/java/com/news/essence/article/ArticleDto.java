@@ -16,7 +16,7 @@ public class ArticleDto {
     private LocalDateTime dateTimePub;
     @JsonDeserialize(using = LongDeserializer.class)
     private Long uri;
-    private String body;
+
     private List<CategoryDto> categories;
 
     // Getters and Setters
@@ -69,13 +69,6 @@ public class ArticleDto {
         this.uri = uri;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
 
     public List<CategoryDto> getCategories() {
         return categories;

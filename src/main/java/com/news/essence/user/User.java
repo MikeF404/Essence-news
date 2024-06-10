@@ -1,5 +1,6 @@
 package com.news.essence.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.news.essence.userReadArticles.UserReadArticles;
 import com.news.essence.userPreference.UserPreference;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ public class User {
     private Long id;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference //to avoid infinite recursion
     private Set<UserPreference> preferences;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

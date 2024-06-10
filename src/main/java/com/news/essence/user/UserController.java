@@ -2,6 +2,7 @@ package com.news.essence.user;
 
 import com.news.essence.article.Article;
 import com.news.essence.userReadArticles.UserReadArticles;
+import com.news.essence.userReadArticles.UserReadArticlesDTO;
 import com.news.essence.userReadArticles.UserReadArticlesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,9 @@ public class UserController {
     public Long createNewUser() {
         return userService.createNewUser();
     }
-    @PostMapping("/{id}/read-articles")
-    public List<UserReadArticles> getUserReadArticles(@PathVariable Long userId) {
-        return userReadArticlesService.getUserReadArticles(userId);
+    @GetMapping("/{id}/read-articles")
+    public List<UserReadArticlesDTO> getUserReadArticles(@PathVariable Long id) {
+        return userReadArticlesService.getUserReadArticles(id);
     }
 
 

@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface UserReadArticlesRepository extends JpaRepository<UserReadArticles, Long> {
     List<UserReadArticles> findByUser(User user);
+    List<UserReadArticles> findByUserId(long userId);
+
+
 }
