@@ -10,7 +10,7 @@ function App() {
     const [popularArticles, setPopularArticles] = useState<Article[]>([]);
     const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]);
     const [archivedArticles, setArchivedArticles] = useState<Article[]>([]);
-    const [userId, setUserId] = useState<string | null>(localStorage.getItem('user_id'));
+    const [userId] = useState<string | null>(localStorage.getItem('user_id'));
     const [canAccessPersonalized, setCanAccessPersonalized] = useState<boolean>(false);
     const [articles, setArticles] = useState<Article[]>([]);
 

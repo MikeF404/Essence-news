@@ -36,9 +36,13 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
                                     {getURLDomain(article.url)}
                                 </p>
                                 <div className="text-foreground flex gap-3">
-                                    <div className="flex">
-                                        <Eye /> {article.viewCount}
-                                    </div>
+                                    {
+                                        (article.viewCount >= 0) &&
+                                            <div className="flex">
+                                                <Eye />
+                                                {article.viewCount}
+                                            </div>
+                                    }
                                     <p>
                                         {timeSince(article.dateTimePub)}
                                     </p>

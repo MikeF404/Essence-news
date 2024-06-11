@@ -1,30 +1,11 @@
 import {ArticleCard} from "@/components/ArticleCard.tsx";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Article } from '../types/article';
 
-const Feed = () => {
-    const [articles, setArticles] = useState<Article[]>([]);
+type FeedProps = {
+    articles: Article[];
+};
 
-
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try{
-                const userId = localStorage.getItem('user_id') || '0';
-                const response = await axios.get<Article[]>('http://localhost:8080/api/articles/popular', {
-                    headers: {
-                        'User-ID': userId
-                    }
-                });
-                setArticles(response.data);
-                console.log(response.data);
-            } catch (error){
-                console.error('Error fetching articles: ', error);
-            }
-        }
-
-        fetchArticles();
-    }, []);
+const Feed: React.FC<FeedProps> = ({ articles }) => {
 
     return(
         <div className="space-y-2">
@@ -35,6 +16,7 @@ const Feed = () => {
                     <ArticleCard key={article.uri} article={article} />
                 ))
             )}
+
 
         </div>
     );

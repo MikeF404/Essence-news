@@ -3,8 +3,12 @@ import logo from "../assets/essence_logo.png";
 import {Button} from "@/components/ui/button.tsx";
 import {ThemeToggle} from "@/components/ThemeToggle.tsx";
 
+type HeaderProps = {
+    currentTab: string;
+    setCurrentTab: (tab: string) => void;
+};
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({ currentTab, setCurrentTab }) => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -43,11 +47,26 @@ const Header = () => {
 
                         <ThemeToggle/>
                     </div>
-                    <Button variant="outline" className="border-2 border-accent bg-accent-foreground">
+                    <Button
+                        variant="outline"
+                        className={`border-2 border-accent ${currentTab === 'popular' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground '}`}
+                        onClick={() => setCurrentTab('popular')}
+                    >
                         Popular
                     </Button>
-                    <Button variant="outline" className="border-2 border-accent bg-accent-foreground">
+                    <Button
+                        variant="outline"
+                        className={`border-2 border-accent ${currentTab === 'personalized' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
+                        onClick={() => setCurrentTab('personalized')}
+                    >
                         Personalized
+                    </Button>
+                    <Button
+                        variant="outline"
+                        className={`border-2 border-accent ${currentTab === 'archived' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
+                        onClick={() => setCurrentTab('archived')}
+                    >
+                        Archived
                     </Button>
 
                 </div>
