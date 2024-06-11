@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class UserReadArticlesDTO {
     private Long uri;
+    private String url;
     private String title;
     private LocalDateTime dateTimePub;
     private String author;
@@ -21,9 +22,10 @@ public class UserReadArticlesDTO {
         this.sourceName = article.getSourceName();
         this.image = article.getImage();
         this.summary = article.getSummary();
+        this.url = article.getUrl();
     }
 
-    public UserReadArticlesDTO(Long uri, String title, LocalDateTime dateTimePub, String author, String sourceName, String image, String summary) {
+    public UserReadArticlesDTO(Long uri, String title, LocalDateTime dateTimePub, String author, String sourceName, String image, String summary, String url) {
         this.uri = uri;
         this.title = title;
         this.dateTimePub = dateTimePub;
@@ -31,13 +33,20 @@ public class UserReadArticlesDTO {
         this.sourceName = sourceName;
         this.image = image;
         this.summary = summary;
+        this.url = url;
     }
     public Long getUri() {
         return uri;
     }
 
 
+    public String getUrl() {
+        return url;
+    }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public void setUri(Long uri) {
         this.uri = uri;
