@@ -21,7 +21,7 @@ public class UserPreference {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    private float preferenceScore = 0.0f;
+    private double preferenceScore = 0.0f;
 
     // Getters and Setters
     public Long getId() {
@@ -48,11 +48,11 @@ public class UserPreference {
         this.category = category;
     }
 
-    public float getPreferenceScore() {
+    public double getPreferenceScore() {
         return preferenceScore;
     }
 
-    public void setPreferenceScore(float preferenceScore) {
+    public void setPreferenceScore(double preferenceScore) {
         this.preferenceScore = preferenceScore;
     }
 }

@@ -26,20 +26,21 @@ public class UserPreferenceService {
     @Autowired
     private ArticleRepository articleRepository;
 
-    public List<UserPreference> findUserPreferences(Long userId) {
+    public List<UserPreference> getUserPreferences(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return userPreferenceRepository.findByUser(user);
     }
+
 
     @Transactional
     public void updateUserPreference(Long userId, Long articleId, String interactionType) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new RuntimeException("Article not found"));
 
-        float increment = switch (interactionType) {
-            case "read" -> 0.2f;
-            case "moreLikeThis" -> 0.5f;
-            case "lessLikeThis" -> -1.0f;
+        double increment = switch (interactionType) {
+            case "read" -> 0.2;
+            case "moreLikeThis" -> 0.5;
+            case "lessLikeThis" -> -1.0;
             default -> 0;
         };
 
@@ -49,7 +50,7 @@ public class UserPreferenceService {
                 userPreference = new UserPreference();
                 userPreference.setUser(user);
                 userPreference.setCategory(category);
-                userPreference.setPreferenceScore(0.0f);
+                userPreference.setPreferenceScore(0.0);
             }
             userPreference.setPreferenceScore(userPreference.getPreferenceScore() + increment);
             userPreferenceRepository.save(userPreference);

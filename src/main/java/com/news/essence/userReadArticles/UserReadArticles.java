@@ -42,4 +42,8 @@ public class UserReadArticles {
     public void setArticle(Article article) {
         this.article = article;
     }
+
+    public Long getArticleUri() {
+        return article.getUri();
+    }
 }

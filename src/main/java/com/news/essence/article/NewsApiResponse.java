@@ -15,14 +15,14 @@ public class NewsApiResponse {
     }
 
     public static class ArticlesContainer {
-        private List<ArticleDto> results;
+        private List<ArticleDTO> results;
 
         // Getters and Setters
-        public List<ArticleDto> getResults() {
+        public List<ArticleDTO> getResults() {
             return results;
         }
 
-        public void setResults(List<ArticleDto> results) {
+        public void setResults(List<ArticleDTO> results) {
             this.results = results;
         }
     }

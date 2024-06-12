@@ -54,9 +54,9 @@ public class UserService {
                 userPreference.setCategory(category);
             }
             if (userLikedArticle) {
-                userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.5f);
+                userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.5);
             } else {
-                userPreference.setPreferenceScore(userPreference.getPreferenceScore() - 0.5f);
+                userPreference.setPreferenceScore(userPreference.getPreferenceScore() - 0.5);
             }
             userPreferenceRepository.save(userPreference);
         }
@@ -72,7 +72,7 @@ public class UserService {
                 userPreference.setUser(user);
                 userPreference.setCategory(category);
             }
-            userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.2f);
+            userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.2);
             userPreferenceRepository.save(userPreference);
         }
     }

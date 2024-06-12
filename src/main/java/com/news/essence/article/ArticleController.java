@@ -43,6 +43,12 @@ public class ArticleController {
 
         return summary;
     }
+
+    @GetMapping("/relevant/{userId}/{page}")
+    public List<ArticleDTO> getRelevantArticles(@PathVariable Long userId, @PathVariable int page) {
+        return articleService.getRelevantArticles(userId, page);
+    }
+
     @PostMapping("/interact")
     public void logInteraction(@RequestBody InteractionRequest request) {
         userPreferenceService.updateUserPreference(request.getUserId(), request.getArticleId(), request.getInteractionType());

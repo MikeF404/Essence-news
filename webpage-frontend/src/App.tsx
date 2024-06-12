@@ -23,7 +23,7 @@ function App() {
 
         const fetchPersonalizedArticles = async () => {
             if (userId) {
-                const response = await axios.get(`http://localhost:8080/api/articles/personalized/${userId}`);
+                const response = await axios.get(`http://localhost:8080/api/articles/relevant/${userId}/0`);
                 setPersonalizedArticles(response.data);
             }
         };

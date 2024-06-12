@@ -7,7 +7,12 @@ import com.news.essence.OpenAIClient;
 import com.news.essence.category.Category;
 import com.news.essence.category.CategoryDto;
 import com.news.essence.category.CategoryRepository;
+import com.news.essence.user.User;
 import com.news.essence.user.UserService;
+import com.news.essence.userPreference.UserPreference;
+import com.news.essence.userPreference.UserPreferenceService;
+import com.news.essence.userReadArticles.UserReadArticles;
+import com.news.essence.userReadArticles.UserReadArticlesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +42,11 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private UserPreferenceService userPreferenceService;
+    @Autowired
+    private UserReadArticlesRepository userReadArticlesRepository;
+    private static final int PAGE_SIZE = 20;
     private final OpenAIClient openAIClient;
     @Autowired
     private UserService userService;
@@ -145,6 +155,35 @@ public class ArticleService {
         articleRepository.saveAll(articles);
     }
 
+    @Transactional
+    public List<ArticleDTO> getRelevantArticles(Long userId, int page) {
+        // Fetch user preferences
+        List<UserPreference> preferences = userPreferenceService.getUserPreferences(userId);
+        Map<Category, Double> userPreferences = preferences.stream()
+                .collect(Collectors.toMap(UserPreference::getCategory, UserPreference::getPreferenceScore));
+
+        // Fetch articles read by user
+        List<UserReadArticles> readArticles = userReadArticlesRepository.findByUserId(userId);
+        Set<Long> readArticleIds = readArticles.stream().map(UserReadArticles::getArticleUri).collect(Collectors.toSet());
+
+        // Fetch all articles and filter out read ones
+        List<Article> allArticles = articleRepository.findAll();
+        List<Article> filteredArticles = allArticles.stream()
+                .filter(article -> !readArticleIds.contains(article.getUri()))
+                .toList();
+
+        // Sort articles by relevance
+        List<Article> relevantArticles = filteredArticles.stream()
+                .sorted((a, b) -> Double.compare(computeRelevance(b, userPreferences), computeRelevance(a, userPreferences)))
+                .skip((long) page * PAGE_SIZE)
+                .limit(PAGE_SIZE)
+                .toList();
+
+        List<ArticleDTO> list = relevantArticles.stream().map(ArticleDTO::new).collect(Collectors.toList());
+
+        return list;
+    }
+
     // A method to fill the DB with articles (can be triggered manually)
     public void fillDBWithArticles() {
         fetchAndStoreArticles();
@@ -190,7 +229,14 @@ public class ArticleService {
         }
     }
 
-    private Article mapToEntity(ArticleDto articleDto) {
+    private double computeRelevance(Article article, Map<Category, Double> userPreferences) {
+        return article.getCategories().stream()
+                .mapToDouble(category -> userPreferences.getOrDefault(category, 0.0))
+                .sum();
+    }
+
+
+    private Article mapToEntity(ArticleDTO articleDto) {
         Article article = new Article();
         article.setTitle(articleDto.getTitle());
         article.setUrl(articleDto.getUrl());

@@ -7,7 +7,7 @@ import com.news.essence.util.LongDeserializer;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ArticleDto {
+public class ArticleDTO {
 
     private String title;
     private String url;
@@ -18,6 +18,19 @@ public class ArticleDto {
     private Long uri;
 
     private List<CategoryDto> categories;
+
+    public ArticleDTO() {
+
+    }
+
+    public ArticleDTO(Article article) {
+        this.title = article.getTitle();
+        this.url = article.getUrl();
+        this.summary = article.getSummary();
+        this.image = article.getImage();
+        this.dateTimePub = article.getDateTimePub();
+        this.uri = article.getUri();
+    }
 
     // Getters and Setters
     public String getTitle() {
