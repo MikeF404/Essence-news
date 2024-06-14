@@ -214,11 +214,23 @@ public class ArticleService {
                         "investegate.co.uk"
                 );
 
-                return response.getArticles().getResults().stream()
-                        .filter(articleDto -> !articleRepository.existsById(articleDto.getUri()))
-                        .filter(articleDto -> blacklistedUrls.stream().noneMatch(articleDto.getUrl()::contains))
-                        .map(this::mapToEntity)
-                        .collect(Collectors.toList());
+                List<Article> list = new ArrayList<>();
+                for (Article article : response.getArticles().getResults()) {
+                    if (!articleRepository.existsById(article.getUri())) {
+                        String s = article.getUrl();
+                        boolean b = true;
+                        for (String blacklistedUrl : blacklistedUrls) {
+                            if (s.contains(blacklistedUrl)) {
+                                b = false;
+                                break;
+                            }
+                        }
+                        if (b) {
+                            list.add(article);
+                        }
+                    }
+                }
+                return list;
             } else {
                 logger.error("No articles found in the JSON data.");
                 return List.of();
@@ -234,35 +246,6 @@ public class ArticleService {
                 .mapToDouble(category -> userPreferences.getOrDefault(category, 0.0))
                 .sum();
     }
-
-
-    private Article mapToEntity(ArticleDTO articleDto) {
-        Article article = new Article();
-        article.setTitle(articleDto.getTitle());
-        article.setUrl(articleDto.getUrl());
-        article.setImage(articleDto.getImage());
-        article.setSummary(articleDto.getSummary());
-        article.setDateTimePub(articleDto.getDateTimePub());
-        article.setUri(articleDto.getUri());
-
-        Set<Category> categories = new HashSet<>();
-        for (CategoryDto categoryDto : articleDto.getCategories()) {
-            String simplifiedCategoryName = simplifyCategory(categoryDto.getUri());
-            Category category = categoryRepository.findByName(simplifiedCategoryName);
-            if (category == null) {
-                category = new Category();
-                category.setName(simplifiedCategoryName);
-                category.setParentName(simplifiedCategoryName.split("/")[0]);
-                categoryRepository.save(category);
-            }
-            categories.add(category);
-        }
-        article.setCategories(categories);
-
-        return article;
-    }
-
-
     @Transactional
     public String getArticleSummary(Long uri){
         String output ="No article with such uri!";

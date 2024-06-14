@@ -1,4 +1,6 @@
 package com.news.essence.userReadArticles;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.news.essence.article.Article;
 import com.news.essence.user.User;
 import jakarta.persistence.*;

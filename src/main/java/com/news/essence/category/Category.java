@@ -1,12 +1,11 @@
 package com.news.essence.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.news.essence.article.Article;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.news.essence.userPreference.UserPreference;
+import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -23,8 +22,9 @@ public class Category {
     private String parentName; // Parent category name
 
     @ManyToMany(mappedBy = "categories")
-    @JsonBackReference
+    @JsonIgnore
     private Set<Article> articles = new HashSet<>();
+
 
     // Getters and Setters
     public Long getId() {

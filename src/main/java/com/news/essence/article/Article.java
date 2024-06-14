@@ -1,8 +1,11 @@
 package com.news.essence.article;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.news.essence.category.Category;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.news.essence.userReadArticles.UserReadArticles;
 import com.news.essence.util.LongDeserializer;
 import com.news.essence.util.UriConverter;
 import jakarta.persistence.*;
@@ -40,10 +43,10 @@ public class Article {
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    @JsonManagedReference
+    @JsonIgnore
     private Set<Category> categories = new HashSet<>();
 
-    public Article(long uri, LocalDateTime dateTimePub, String url, String title, String body, String author, String sourceName, String image) {
+     public Article(long uri, LocalDateTime dateTimePub, String url, String title, String body, String author, String sourceName, String image) {
         this.uri = uri;
         this.dateTimePub = dateTimePub;
         this.url = url;

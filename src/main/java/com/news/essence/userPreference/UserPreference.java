@@ -1,6 +1,7 @@
 package com.news.essence.userPreference;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.news.essence.category.Category;
 import com.news.essence.user.User;
 import jakarta.persistence.*;
@@ -14,7 +15,6 @@ public class UserPreference {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference //avoid infinite recursion
     private User user;
 
     @ManyToOne
