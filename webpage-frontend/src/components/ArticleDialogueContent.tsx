@@ -19,7 +19,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
 
     useEffect(() => {
         const fetchSummary = async () => {
-            const userId = localStorage.getItem('user_id');
+            const userId = localStorage.getItem('essence-news-user-id');
             if (!article.summary && isOpen) {
                 setLoading(true);
                 article.viewCount++;

@@ -2,15 +2,13 @@ import { useState, useEffect } from 'react';
 import logo from "../assets/essence_logo.png";
 import {Button} from "@/components/ui/button.tsx";
 import {ThemeToggle} from "@/components/ThemeToggle.tsx";
+import {Link} from "react-router-dom";
 
-type HeaderProps = {
-    currentTab: string;
-    setCurrentTab: (tab: string) => void;
-};
 
-const Header: React.FC<HeaderProps> = ({ currentTab, setCurrentTab }) => {
+const Header = () => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [currentTab, setCurrentTab] = useState('popular');
 
     const handleScroll = () => {
         const currentScrollY = window.scrollY;
@@ -47,27 +45,32 @@ const Header: React.FC<HeaderProps> = ({ currentTab, setCurrentTab }) => {
 
                         <ThemeToggle/>
                     </div>
-                    <Button
-                        variant="outline"
-                        className={`border-2 border-accent ${currentTab === 'popular' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground '}`}
-                        onClick={() => setCurrentTab('popular')}
-                    >
-                        Popular
-                    </Button>
-                    <Button
-                        variant="outline"
-                        className={`border-2 border-accent ${currentTab === 'personalized' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
-                        onClick={() => setCurrentTab('personalized')}
-                    >
-                        Personalized
-                    </Button>
-                    <Button
-                        variant="outline"
-                        className={`border-2 border-accent ${currentTab === 'archived' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
-                        onClick={() => setCurrentTab('archived')}
-                    >
-                        Archived
-                    </Button>
+                    <Link to="/popular">
+                        <Button
+                            variant="outline"
+                            className={`border-2 border-accent ${currentTab === 'popular' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground '}`}
+                            onClick={setCurrentTab('popular')}
+                        >
+                            Popular
+                        </Button>
+                    </Link>
+                    <Link to="/personalized">
+                        <Button
+                            variant="outline"
+                            className={`border-2 border-accent ${currentTab === 'personalized' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
+                        >
+                            Personalized
+                        </Button>
+                    </Link>
+                    <Link to="/archived">
+                        <Button
+                            variant="outline"
+                            className={`border-2 border-accent ${currentTab === 'archived' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
+                        >
+                            Archived
+                        </Button>
+                    </Link>
+
 
                 </div>
 

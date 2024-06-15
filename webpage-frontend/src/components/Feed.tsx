@@ -1,26 +1,61 @@
 import {ArticleCard} from "@/components/ArticleCard.tsx";
-import { Article } from '../types/article';
+import {useEffect} from "react";
 
-type FeedProps = {
-    articles: Article[];
-};
+const PopularFeed = ({ articles, setArticles }) => {
+    useEffect(() => {
+        if (articles.length === 0) {
+            // Fetch articles only if they are not already fetched
+            fetch('/api/popular-articles')
+                .then(response => response.json())
+                .then(data => setArticles(data));
+        }
+    }, [articles, setArticles]);
 
-const Feed: React.FC<FeedProps> = ({ articles }) => {
-
-    return(
+    return (
         <div className="space-y-2">
-            {articles.length === 0 ? (
-                <p>Loading articles...</p>
-            ) : (
-                articles.map(article => (
-                    <ArticleCard key={article.uri} article={article} />
-                ))
-            )}
-
-
+            {articles.map(article => (
+                <ArticleCard key={article.id} {...article} />
+            ))}
         </div>
     );
-
 };
 
-export default Feed;
+const PersonalizedFeed = ({ articles, setArticles }) => {
+    useEffect(() => {
+        if (articles.length === 0) {
+            // Fetch articles only if they are not already fetched
+            fetch('/api/personalized-articles')
+                .then(response => response.json())
+                .then(data => setArticles(data));
+        }
+    }, [articles, setArticles]);
+
+    return (
+        <div className="space-y-2">
+            {articles.map(article => (
+                <ArticleCard key={article.id} {...article} />
+            ))}
+        </div>
+    );
+};
+
+const ArchivedFeed = ({ articles, setArticles }) => {
+    useEffect(() => {
+        if (articles.length === 0) {
+            // Fetch articles only if they are not already fetched
+            fetch('/api/archived-articles')
+                .then(response => response.json())
+                .then(data => setArticles(data));
+        }
+    }, [articles, setArticles]);
+
+    return (
+        <div className="space-y-2">
+            {articles.map(article => (
+                <ArticleCard key={article.id} {...article} />
+            ))}
+        </div>
+    );
+};
+
+export { PopularFeed, PersonalizedFeed, ArchivedFeed };

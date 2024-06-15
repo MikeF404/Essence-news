@@ -5,13 +5,13 @@ import axios from 'axios';
 const UserIdentifier: React.FC = () => {
     useEffect(() => {
         const getUserId = async (): Promise<string> => {
-            let userId = localStorage.getItem('user_id');
+            let userId = localStorage.getItem('essence-news-user-id');
             if (!userId) {
                 try {
                     const response = await axios.post('http://localhost:8080/api/user/create');
                     userId = response.data.toString();
                     if (userId) {
-                        localStorage.setItem('user_id', userId);
+                        localStorage.setItem('essence-news-user-id', userId);
                     }
                 } catch (error) {
                     console.error('Error generating user ID:', error);
