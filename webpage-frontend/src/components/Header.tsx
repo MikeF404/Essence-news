@@ -49,7 +49,7 @@ const Header = () => {
                         <Button
                             variant="outline"
                             className={`border-2 border-accent ${currentTab === 'popular' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground '}`}
-                            onClick={setCurrentTab('popular')}
+                            onClick={() => setCurrentTab('popular')}
                         >
                             Popular
                         </Button>
@@ -58,6 +58,7 @@ const Header = () => {
                         <Button
                             variant="outline"
                             className={`border-2 border-accent ${currentTab === 'personalized' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
+                            onClick={() => setCurrentTab('personalized')}
                         >
                             Personalized
                         </Button>
@@ -66,6 +67,7 @@ const Header = () => {
                         <Button
                             variant="outline"
                             className={`border-2 border-accent ${currentTab === 'archived' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
+                            onClick={() => setCurrentTab('archived')}
                         >
                             Archived
                         </Button>

@@ -1,61 +1,30 @@
-import {ArticleCard} from "@/components/ArticleCard.tsx";
-import {useEffect} from "react";
+import React, {useContext, useEffect} from 'react';
+import { ArticleCard } from '@/components/ArticleCard';
+import { Article } from '@/types/article';
+import {GlobalStateContext} from "@/components/GlobalStateContext.tsx";
 
-const PopularFeed = ({ articles, setArticles }) => {
+interface FeedProps {
+    endpoint: string;
+    articles: Article[];
+    setArticles: React.Dispatch<React.SetStateAction<Article[]>>;
+}
+
+const Feed: React.FC<FeedProps> = ({ endpoint, articles, setArticles }) => {
+    const { readArticlesCount, updateReadArticlesCount, personalizedFeedEnabled, userId } = useContext(GlobalStateContext);
+
     useEffect(() => {
-        if (articles.length === 0) {
-            // Fetch articles only if they are not already fetched
-            fetch('/api/popular-articles')
-                .then(response => response.json())
-                .then(data => setArticles(data));
-        }
-    }, [articles, setArticles]);
+        fetch(endpoint)
+            .then(response => response.json())
+            .then(data => setArticles(data));
+    }, [endpoint, setArticles]);
 
     return (
         <div className="space-y-2">
             {articles.map(article => (
-                <ArticleCard key={article.id} {...article} />
+                <ArticleCard key={article.uri} article={article} />
             ))}
         </div>
     );
 };
 
-const PersonalizedFeed = ({ articles, setArticles }) => {
-    useEffect(() => {
-        if (articles.length === 0) {
-            // Fetch articles only if they are not already fetched
-            fetch('/api/personalized-articles')
-                .then(response => response.json())
-                .then(data => setArticles(data));
-        }
-    }, [articles, setArticles]);
-
-    return (
-        <div className="space-y-2">
-            {articles.map(article => (
-                <ArticleCard key={article.id} {...article} />
-            ))}
-        </div>
-    );
-};
-
-const ArchivedFeed = ({ articles, setArticles }) => {
-    useEffect(() => {
-        if (articles.length === 0) {
-            // Fetch articles only if they are not already fetched
-            fetch('/api/archived-articles')
-                .then(response => response.json())
-                .then(data => setArticles(data));
-        }
-    }, [articles, setArticles]);
-
-    return (
-        <div className="space-y-2">
-            {articles.map(article => (
-                <ArticleCard key={article.id} {...article} />
-            ))}
-        </div>
-    );
-};
-
-export { PopularFeed, PersonalizedFeed, ArchivedFeed };
+export default Feed;

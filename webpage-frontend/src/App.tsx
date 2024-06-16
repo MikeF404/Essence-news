@@ -1,41 +1,49 @@
-import Feed, {ArchivedFeed, PersonalizedFeed, PopularFeed} from "@/components/Feed.tsx";
-import Header from "@/components/Header.tsx";
-import UserIdentifier from "@/components/UserIdentifier.tsx";
+import React, {useContext, useState} from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from '@/components/Header';
+import {GlobalStateContext, GlobalStateProvider} from '@/components/GlobalStateContext';
+import Feed from '@/components/Feed';
+import { Article } from '@/types/article';
 import {ThemeProvider} from "@/components/ThemeProvider.tsx";
-import {useState} from "react";
-import {Article} from "@/types/article.ts";
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-function App() {
-    const [currentTab, setCurrentTab] = useState<string>('popular');
-    const [popularArticles, setPopularArticles] = useState<Article[]>([]);
-    const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]);
-    const [archivedArticles, setArchivedArticles] = useState<Article[]>([]);
-    const [userId] = useState<string | null>(localStorage.getItem('essence-news-user-id'));
-    const [canAccessPersonalized, setCanAccessPersonalized] = useState<boolean>(false);
-    const [articles, setArticles] = useState<Article[]>([]);
+import UserIdentifier from "@/components/UserIdentifier.tsx";
 
+const App: React.FC = () => {
     return (
         <div className="p-20 flex justify-center bg-accent">
             <ThemeProvider defaultTheme="light" storageKey="essence-news-ui-theme">
-                <UserIdentifier />
-                <Header/>
-                <Switch>
-                    <Route path="/popular">
-                        <PopularFeed articles={popularArticles} setArticles={setPopularArticles} />
-                    </Route>
-                    <Route path="/personalized">
-                        <PersonalizedFeed articles={personalizedArticles} setArticles={setPersonalizedArticles} />
-                    </Route>
-                    <Route path="/archived">
-                        <ArchivedFeed articles={archivedArticles} setArticles={setArchivedArticles} />
-                    </Route>
-                    <Route path="/">
-                        <PopularFeed articles={popularArticles} setArticles={setPopularArticles} />
-                    </Route>
-                </Switch>
+                <GlobalStateProvider>
+
+                    <Router>
+                        <UserIdentifier />
+                        <Header />
+                        <AppRoutes />
+                    </Router>
+
+                </GlobalStateProvider>
             </ThemeProvider>
         </div>
     );
-}
+};
 
+const AppRoutes: React.FC = () => {
+    const [popularArticles, setPopularArticles] = useState<Article[]>([]);
+    const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]);
+    const [archivedArticles, setArchivedArticles] = useState<Article[]>([]);
+    const { userId }: string = localStorage.getItem("essence-news-user-id")
+    console.log("userId: ", userId)
+
+    return (
+
+
+                <Routes>
+                    <Route path="/popular" element={<Feed endpoint="http://localhost:8080/api/articles/popular" articles={popularArticles} setArticles={setPopularArticles} />} />
+                    <Route path="/personalized" element={<Feed endpoint={`http://localhost:8080/api/articles/relevant/${userId}/0`} articles={personalizedArticles} setArticles={setPersonalizedArticles} />} />
+                    <Route path="/archived" element={<Feed endpoint={`http://localhost:8080/api/user/${userId}/read-articles`} articles={archivedArticles} setArticles={setArchivedArticles} />} />
+                    <Route path="/" element={<Feed endpoint="http://localhost:8080/api/articles/popular" articles={popularArticles} setArticles={setPopularArticles} />} />
+                </Routes>
+
+
+    );
+};
 export default App;
+
