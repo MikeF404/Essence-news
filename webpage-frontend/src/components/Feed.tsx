@@ -10,7 +10,7 @@ interface FeedProps {
 }
 
 const Feed: React.FC<FeedProps> = ({ endpoint, articles, setArticles }) => {
-    const { readArticlesCount, updateReadArticlesCount, personalizedFeedEnabled, userId } = useContext(GlobalStateContext);
+    const { readArticlesCount, updateReadArticlesCount, personalizedFeedEnabled, userId, setUserId} = useContext(GlobalStateContext);
 
     useEffect(() => {
         fetch(endpoint)

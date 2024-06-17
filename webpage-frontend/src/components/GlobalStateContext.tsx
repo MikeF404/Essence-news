@@ -5,6 +5,7 @@ interface GlobalStateContextProps {
     updateReadArticlesCount: (increment: number) => void;
     personalizedFeedEnabled: boolean;
     userId: string | null;
+    setUserId: (userId: string) => void;
 }
 
 const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
@@ -44,7 +45,7 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) =
     };
 
     return (
-        <GlobalStateContext.Provider value={{ readArticlesCount, updateReadArticlesCount, personalizedFeedEnabled, userId }}>
+        <GlobalStateContext.Provider value={{ readArticlesCount, updateReadArticlesCount, personalizedFeedEnabled, userId, setUserId }}>
             {children}
         </GlobalStateContext.Provider>
     );

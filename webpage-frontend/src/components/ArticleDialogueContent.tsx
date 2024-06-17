@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import './ArticleDialogueContent.css'; // Without it - most tags (like <h1> or <ul>) are restricted from rendering.
 import { Article } from "@/types/article";
 import axios from 'axios';
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import {getURLDomain} from "@/utils/getURLDomain.ts";
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
+import {GlobalStateContext} from "@/components/GlobalStateContext.tsx";
+
 
 
 type ArticleDialogueContentProps = {
@@ -16,6 +18,7 @@ type ArticleDialogueContentProps = {
 const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article, isOpen }) => {
     const [summary, setSummary] = useState<string | null>(article.summary);
     const [loading, setLoading] = useState<boolean>(!article.summary);
+    const { updateReadArticlesCount } = useContext(GlobalStateContext)!;
 
     useEffect(() => {
         const fetchSummary = async () => {
@@ -24,7 +27,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
                 setLoading(true);
                 article.viewCount++;
                 try {
-                    console.log("Requesting the summary from chatGPT...")
+                    console.log("Requesting the summary from chatGPT...");
                     const response = await axios.get<string>(`http://localhost:8080/api/articles/summary/${article.uri}`, {
                         headers: {
                             userId: userId || '',
@@ -41,6 +44,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
             }
         };
 
+        updateReadArticlesCount(1);
         fetchSummary();
     }, [isOpen, article]);
 

@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+import React, {useContext, useEffect} from 'react';
 import axios from 'axios';
+import { GlobalStateContext } from '@/components/GlobalStateContext';
 
 
-const UserIdentifier: React.FC = () => {
+const UserIdentifier: React.FC<{ setLoading: (loading: boolean) => void }> = ({ setLoading }) => {
+    const { setUserId } = useContext(GlobalStateContext)!;
+
     useEffect(() => {
         const getUserId = async (): Promise<string> => {
             let userId = localStorage.getItem('essence-news-user-id');
@@ -12,6 +15,7 @@ const UserIdentifier: React.FC = () => {
                     userId = response.data.toString();
                     if (userId) {
                         localStorage.setItem('essence-news-user-id', userId);
+
                     }
                 } catch (error) {
                     console.error('Error generating user ID:', error);
@@ -23,11 +27,12 @@ const UserIdentifier: React.FC = () => {
 
         const fetchUserId = async () => {
             const userId = await getUserId();
-            console.log(`User ID: ${userId}`);
+            setUserId(userId);
+            setLoading(false);
         };
 
         fetchUserId();
-    }, []);
+    }, [setUserId, setLoading]);
 
     return null;
 };
