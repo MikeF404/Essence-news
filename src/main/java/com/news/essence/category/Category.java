@@ -22,7 +22,6 @@ public class Category {
     private String parentName; // Parent category name
 
     @ManyToMany(mappedBy = "categories")
-    @JsonIgnore
     private Set<Article> articles = new HashSet<>();
 
 

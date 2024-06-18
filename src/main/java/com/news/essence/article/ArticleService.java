@@ -146,13 +146,42 @@ public class ArticleService {
             logger.error("Failed to fetch articles. Status Code: {}, Response Body: {}", response.getStatusCode(), response.getBody());
             return;  // Exit if the API call failed
         }
-        logger.info("Payload: {}", payload);
-        /*
 
+        /*
+        logger.info("Payload: {}", payload);
         logger.info("API Response: {}", response.getBody().toString());
         logger.info("Saving articles: {}", articles);
          */
         articleRepository.saveAll(articles);
+    }
+
+
+
+    private Article mapToEntity(ArticleDTO articleDto) {
+        Article article = new Article();
+        article.setTitle(articleDto.getTitle());
+        article.setUrl(articleDto.getUrl());
+        article.setImage(articleDto.getImage());
+        article.setSummary(articleDto.getSummary());
+        article.setDateTimePub(articleDto.getDateTimePub());
+        article.setUri(articleDto.getUri());
+        article.setBody(articleDto.getBody());
+
+        Set<Category> categories = new HashSet<>();
+        for (CategoryDto categoryDto : articleDto.getCategories()) {
+            String simplifiedCategoryName = simplifyCategory(categoryDto.getUri());
+            Category category = categoryRepository.findByName(simplifiedCategoryName);
+            if (category == null) {
+                category = new Category();
+                category.setName(simplifiedCategoryName);
+                category.setParentName(simplifiedCategoryName.split("/")[0]);
+                categoryRepository.save(category);
+            }
+            categories.add(category);
+        }
+        article.setCategories(categories);
+
+        return article;
     }
 
     @Transactional
@@ -215,17 +244,10 @@ public class ArticleService {
                 );
 
                 List<Article> list = new ArrayList<>();
-                for (Article article : response.getArticles().getResults()) {
-                    if (!articleRepository.existsById(article.getUri())) {
-                        String s = article.getUrl();
-                        boolean b = true;
-                        for (String blacklistedUrl : blacklistedUrls) {
-                            if (s.contains(blacklistedUrl)) {
-                                b = false;
-                                break;
-                            }
-                        }
-                        if (b) {
+                for (ArticleDTO articleDto : response.getArticles().getResults()) {
+                    if (!articleRepository.existsById(articleDto.getUri())) {
+                        if (blacklistedUrls.stream().noneMatch(articleDto.getUrl()::contains)) {
+                            Article article = mapToEntity(articleDto);
                             list.add(article);
                         }
                     }

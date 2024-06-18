@@ -43,6 +43,13 @@ public class ArticleController {
 
         return summary;
     }
+    @GetMapping("/read/{articleId}")
+    public void logReading(@PathVariable Long articleId, @RequestHeader(value = "userId", required = false) Long userId){
+        if (userId != null) {
+            userReadArticlesService.logUserReadArticle(userId, articleId);
+            userPreferenceService.updateUserPreference(userId, articleId, "read");
+        }
+    }
 
     @GetMapping("/relevant/{userId}/{page}")
     public List<ArticleDTO> getRelevantArticles(@PathVariable Long userId, @PathVariable int page) {

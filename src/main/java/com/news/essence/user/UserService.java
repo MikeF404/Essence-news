@@ -43,48 +43,5 @@ public class UserService {
     public Article findArticleById(Long articleId) {
         return articleRepository.findById(articleId).orElseThrow(() -> new RuntimeException("Article not found"));
     }
-
-    @Transactional
-    public void updateUserPreference(User user, Article article, boolean userLikedArticle) {
-        for (Category category : article.getCategories()) {
-            UserPreference userPreference = userPreferenceRepository.findByUserAndCategory(user, category);
-            if (userPreference == null) {
-                userPreference = new UserPreference();
-                userPreference.setUser(user);
-                userPreference.setCategory(category);
-            }
-            if (userLikedArticle) {
-                userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.5);
-            } else {
-                userPreference.setPreferenceScore(userPreference.getPreferenceScore() - 0.5);
-            }
-            userPreferenceRepository.save(userPreference);
-        }
-    }
-
-    // if user read the article without providing a response
-    @Transactional
-    public void updateUserPreference(User user, Article article) {
-        for (Category category : article.getCategories()) {
-            UserPreference userPreference = userPreferenceRepository.findByUserAndCategory(user, category);
-            if (userPreference == null) {
-                userPreference = new UserPreference();
-                userPreference.setUser(user);
-                userPreference.setCategory(category);
-            }
-            userPreference.setPreferenceScore(userPreference.getPreferenceScore() + 0.2);
-            userPreferenceRepository.save(userPreference);
-        }
-    }
-
-    @Transactional
-    public void logUserInteraction(User user, Article article, boolean userLikedArticle) {
-        UserReadArticles interaction = new UserReadArticles();
-        interaction.setUser(user);
-        interaction.setArticle(article);
-        //interaction.setUserLikedArticle(userLikedArticle);
-        userArticleInteractionRepository.save(interaction);
-        updateUserPreference(user, article, userLikedArticle);
-    }
 }
 

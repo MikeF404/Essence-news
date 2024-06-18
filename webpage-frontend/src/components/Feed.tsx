@@ -16,6 +16,7 @@ const Feed: React.FC<FeedProps> = ({ endpoint, articles, setArticles }) => {
         fetch(endpoint)
             .then(response => response.json())
             .then(data => setArticles(data));
+        console.log(articles);
     }, [endpoint, setArticles]);
 
     return (

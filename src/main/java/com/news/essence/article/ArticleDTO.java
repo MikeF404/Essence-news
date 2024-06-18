@@ -6,6 +6,7 @@ import com.news.essence.util.LongDeserializer;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class ArticleDTO {
 
@@ -16,8 +17,8 @@ public class ArticleDTO {
     private LocalDateTime dateTimePub;
     @JsonDeserialize(using = LongDeserializer.class)
     private Long uri;
-
-    private List<CategoryDto> categories;
+    private String body;
+    private Set<CategoryDto> categories;
 
     public ArticleDTO() {
 
@@ -30,6 +31,7 @@ public class ArticleDTO {
         this.image = article.getImage();
         this.dateTimePub = article.getDateTimePub();
         this.uri = article.getUri();
+        this.body = article.getBody();
     }
 
     // Getters and Setters
@@ -83,11 +85,19 @@ public class ArticleDTO {
     }
 
 
-    public List<CategoryDto> getCategories() {
+    public Set<CategoryDto> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<CategoryDto> categories) {
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setCategories(Set<CategoryDto> categories) {
         this.categories = categories;
     }
 }
