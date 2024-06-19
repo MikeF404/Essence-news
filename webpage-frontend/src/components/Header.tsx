@@ -11,7 +11,7 @@ const Header = () => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [currentTab, setCurrentTab] = useState('popular');
-    const { readArticlesCount } = useContext(GlobalStateContext);
+    const { readArticlesCount} = useContext(GlobalStateContext);
 
     const handleScroll = () => {
         const currentScrollY = window.scrollY;

@@ -2,7 +2,8 @@ import React, { createContext, ReactNode, useEffect, useState } from 'react';
 
 interface GlobalStateContextProps {
     readArticlesCount: number;
-    updateReadArticlesCount: (increment: number) => void;
+    incrementReadArticlesCount: () => void;
+    updateReadArticlesCount: () => void;
     personalizedFeedEnabled: boolean;
     userId: string | null;
     setUserId: (userId: string) => void;
@@ -22,30 +23,33 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) =
     useEffect(() => {
         const storedUserId = localStorage.getItem('user_id');
         setUserId(storedUserId);
-
-        // Fetch initial read articles count from server or localStorage
-        if (storedUserId) {
-            fetch(`/api/read-articles-count/${storedUserId}`)
-                .then(response => response.json())
-                .then(data => {
-                    setReadArticlesCount(data);
-                    if (data >= 5) {
-                        setPersonalizedFeedEnabled(false);
-                    }
-                });
-        }
     }, []);
 
-    const updateReadArticlesCount = (increment: number) => {
-        const newCount = readArticlesCount + increment;
-        setReadArticlesCount(newCount);
-        if (newCount >= 5) {
+    const incrementReadArticlesCount = () => {
+        setReadArticlesCount(readArticlesCount + 1);
+        if (readArticlesCount >= 5) {
+            setPersonalizedFeedEnabled(false);
+        }
+
+    };
+
+    const updateReadArticlesCount = () => {
+        fetch(`http://localhost:8080/api/user/${userId}/read-articles`)
+            .then(response => response.json())
+            .then(data => {
+                setReadArticlesCount(data.length);
+
+                if (readArticlesCount >= 5) {
+                    setPersonalizedFeedEnabled(false);
+                }
+            });
+        if (readArticlesCount >= 5) {
             setPersonalizedFeedEnabled(false);
         }
     };
 
     return (
-        <GlobalStateContext.Provider value={{ readArticlesCount, updateReadArticlesCount, personalizedFeedEnabled, userId, setUserId }}>
+        <GlobalStateContext.Provider value={{ readArticlesCount, incrementReadArticlesCount: incrementReadArticlesCount, updateReadArticlesCount, personalizedFeedEnabled, userId, setUserId }}>
             {children}
         </GlobalStateContext.Provider>
     );

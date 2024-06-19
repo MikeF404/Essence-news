@@ -18,7 +18,7 @@ type ArticleDialogueContentProps = {
 const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article, isOpen }) => {
     const [summary, setSummary] = useState<string | null>(article.summary);
     const [loading, setLoading] = useState<boolean>(!article.summary);
-    const { updateReadArticlesCount } = useContext(GlobalStateContext)!;
+    const { incrementReadArticlesCount } = useContext(GlobalStateContext)!;
 
     useEffect(() => {
         const fetchSummary = async () => {
@@ -26,6 +26,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
             if (!article.summary && isOpen) {
                 setLoading(true);
                 article.viewCount++;
+                incrementReadArticlesCount();
                 try {
                     console.log("Requesting the summary from chatGPT...");
                     const response = await axios.get<string>(`http://localhost:8080/api/articles/summary/${article.uri}`, {
@@ -44,7 +45,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
             }
         };
 
-        updateReadArticlesCount(1);
+
         fetchSummary();
     }, [isOpen, article]);
 
