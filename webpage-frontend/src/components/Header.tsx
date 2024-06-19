@@ -11,7 +11,7 @@ const Header = () => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [currentTab, setCurrentTab] = useState('popular');
-    const { readArticlesCount} = useContext(GlobalStateContext);
+    const { readArticlesCount } = useContext(GlobalStateContext);
 
     const handleScroll = () => {
         const currentScrollY = window.scrollY;
@@ -57,28 +57,37 @@ const Header = () => {
                             Popular
                         </Button>
                     </Link>
-                    <HoverCard>
-                        <HoverCardTrigger asChild>
+                    {readArticlesCount >= 5 ? (
                             <Link to="/personalized">
                                 <Button
                                     variant="outline"
                                     className={`border-2 border-accent ${currentTab === 'personalized' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
                                     onClick={() => setCurrentTab('personalized')}
-                                    disabled={readArticlesCount < 5}
                                 >
                                     Personalized
                                 </Button>
                             </Link>
+                        ):(
+                        <HoverCard>
+                            <HoverCardTrigger asChild>
+                                <div>
+                                    <Button
+                                        variant="outline"
+                                        className={`border-2 border-accent ${currentTab === 'personalized' ? 'bg-accent text-accent-foreground' : 'bg-accent-foreground'}`}
+                                        disabled
+                                    >
+                                        Personalized
+                                    </Button>
+                                </div>
 
-                        </HoverCardTrigger>
-                        {readArticlesCount < 5 &&
+                            </HoverCardTrigger>
                             <HoverCardContent className="w-72">
                                 <p>Personalized feed is enabled after reading at least 5 articles.</p>
                                 <p>Current number of read articles = {readArticlesCount}</p>
                             </HoverCardContent>
-                        }
+                        </HoverCard>
+                    )}
 
-                    </HoverCard>
                     <Link to="/archived">
                         <Button
                             variant="outline"
