@@ -17,7 +17,7 @@ const Feed: React.FC<FeedProps> = ({ endpoint, articles, setArticles }) => {
             .then(response => response.json())
             .then(data => setArticles(data));
         console.log(articles);
-    }, [endpoint, setArticles]);
+    }, [endpoint]);
 
     return (
         <div className="space-y-2">

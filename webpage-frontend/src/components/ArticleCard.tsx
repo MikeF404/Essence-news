@@ -9,10 +9,14 @@ import { Article } from "@/types/article";
 import {timeSince} from "@/utils/dateUtils.ts";
 import {getURLDomain} from "@/utils/getURLDomain.ts";
 import {Eye} from "lucide-react";
+import {isValidImageUrl} from "@/utils/imgUtils.ts";
 
 type ArticleCardProps = {
     article: Article;
 } & React.ComponentPropsWithoutRef<'div'>;
+
+
+
 
 export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
     ({ article, ...props }, ref) => {
@@ -51,18 +55,14 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
 
 
                             </div>
-                            <div className="">
-                                {
-                                    (article.image) &&
-                                        <img
-                                            className="max-w-44 max-h-32 rounded-xl"
-                                            src={article.image}
-                                            alt="article Image"
-                                        />
-
-                                }
-
-                            </div>
+                            {
+                                (article.image && isValidImageUrl(article.image)) &&
+                                <img
+                                    className="max-w-44 max-h-32 rounded-xl"
+                                    src={article.image}
+                                    alt="article Image"
+                                />
+                            }
                         </div>
                     </Card>
                 </DialogTrigger>

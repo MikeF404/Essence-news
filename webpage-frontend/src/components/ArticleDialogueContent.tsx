@@ -7,6 +7,7 @@ import {useContext, useEffect, useState} from "react";
 import {getURLDomain} from "@/utils/getURLDomain.ts";
 import { Skeleton } from "@/components/ui/skeleton";
 import {GlobalStateContext} from "@/components/GlobalStateContext.tsx";
+import {isValidImageUrl} from "@/utils/imgUtils.ts";
 
 
 
@@ -56,7 +57,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
                 <DialogDescription>Source: {getURLDomain(article.url)}</DialogDescription>
             </DialogHeader>
             {
-                (article.image) &&
+                (article.image) &&  isValidImageUrl(article.image) &&
                 <div className="flex mx-auto w-full h-60 my-[-1em] rounded-xl justify-center">
 
                     <img
