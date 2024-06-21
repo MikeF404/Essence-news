@@ -7,7 +7,6 @@ import com.news.essence.OpenAIClient;
 import com.news.essence.category.Category;
 import com.news.essence.category.CategoryDto;
 import com.news.essence.category.CategoryRepository;
-import com.news.essence.user.User;
 import com.news.essence.user.UserService;
 import com.news.essence.userPreference.UserPreference;
 import com.news.essence.userPreference.UserPreferenceService;
@@ -17,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -113,17 +115,20 @@ public class ArticleService {
 
 
     @Transactional
-    public List<Article> getPopularArticles() {
-        // Check the last update time
-        Article latestArticle = articleRepository.findTopByOrderByDateTimePubDesc();
-        LocalDateTime lastUpdate = latestArticle != null ? latestArticle.getDateTimePub() : LocalDateTime.MIN;
+    public Page<Article> getRecentArticles(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Article> recentArticles = articleRepository.findRecentArticles(pageable);
 
-        // If the last update was more than 12 hours ago, fetch fresh articles
+        LocalDateTime lastUpdate = recentArticles != null && recentArticles.hasContent()
+                ? recentArticles.getContent().get(0).getDateTimePub()
+                : LocalDateTime.MIN;
+
         if (ChronoUnit.HOURS.between(lastUpdate, LocalDateTime.now()) > 12) {
             fetchAndStoreArticles();
+            recentArticles = articleRepository.findRecentArticles(pageable);
         }
 
-        return articleRepository.findAll();
+        return recentArticles;
     }
 
     @Transactional

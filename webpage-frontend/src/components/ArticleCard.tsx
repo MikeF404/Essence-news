@@ -9,7 +9,7 @@ import { Article } from "@/types/article";
 import {timeSince} from "@/utils/dateUtils.ts";
 import {getURLDomain} from "@/utils/getURLDomain.ts";
 import {Eye} from "lucide-react";
-import {isValidImageUrl} from "@/utils/imgUtils.ts";
+
 
 type ArticleCardProps = {
     article: Article;
@@ -56,12 +56,14 @@ export const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
 
                             </div>
                             {
-                                (article.image && isValidImageUrl(article.image)) &&
-                                <img
-                                    className="max-w-44 max-h-32 rounded-xl"
-                                    src={article.image}
-                                    alt="article Image"
-                                />
+                                article.image && (
+                                    <img
+                                        className="max-w-44 max-h-32 rounded-xl"
+                                        src={article.image}
+                                        alt="article Image"
+                                        onError={(e) => (e.currentTarget.style.display = 'none')}
+                                    />
+                                )
                             }
                         </div>
                     </Card>

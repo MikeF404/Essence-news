@@ -3,6 +3,9 @@ package com.news.essence.article;
 import com.news.essence.userPreference.UserPreferenceService;
 import com.news.essence.userReadArticles.UserReadArticlesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +24,11 @@ public class ArticleController {
     private UserReadArticlesService userReadArticlesService;
 
     @GetMapping("/popular")
-    public List<Article> getPopularArticles() {
-        return articleService.getPopularArticles();
+    public ResponseEntity<Page<Article>> getPopularArticles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<Article> articles = articleService.getRecentArticles(page, size);
+        return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
     @GetMapping("/fill")
