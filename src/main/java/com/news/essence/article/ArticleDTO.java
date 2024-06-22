@@ -5,7 +5,6 @@ import com.news.essence.category.CategoryDto;
 import com.news.essence.util.LongDeserializer;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 public class ArticleDTO {

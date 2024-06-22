@@ -115,7 +115,7 @@ public class ArticleService {
 
 
     @Transactional
-    public Page<Article> getRecentArticles(int page, int size) {
+    public Page<LightArticleDTO> getRecentArticles(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Article> recentArticles = articleRepository.findRecentArticles(pageable);
 
@@ -128,7 +128,7 @@ public class ArticleService {
             recentArticles = articleRepository.findRecentArticles(pageable);
         }
 
-        return recentArticles;
+        return recentArticles.map(this::mapToLightDTO);
     }
 
     @Transactional
@@ -187,6 +187,17 @@ public class ArticleService {
         article.setCategories(categories);
 
         return article;
+    }
+
+    private LightArticleDTO mapToLightDTO(Article article) {
+        LightArticleDTO dto = new LightArticleDTO();
+        dto.setUri(article.getUri());
+        dto.setTitle(article.getTitle());
+        dto.setUrl(article.getUrl());
+        dto.setSummary(article.getSummary());
+        dto.setImage(article.getImage());
+        dto.setDateTimePub(article.getDateTimePub());
+        return dto;
     }
 
     @Transactional

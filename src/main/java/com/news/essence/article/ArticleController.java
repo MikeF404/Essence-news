@@ -24,10 +24,10 @@ public class ArticleController {
     private UserReadArticlesService userReadArticlesService;
 
     @GetMapping("/popular")
-    public ResponseEntity<Page<Article>> getPopularArticles(
+    public ResponseEntity<Page<LightArticleDTO>> getPopularArticles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Page<Article> articles = articleService.getRecentArticles(page, size);
+        Page<LightArticleDTO> articles = articleService.getRecentArticles(page, size);
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
