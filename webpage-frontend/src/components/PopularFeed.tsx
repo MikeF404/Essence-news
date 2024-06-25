@@ -1,24 +1,30 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useRef, useCallback } from 'react';
 import { ArticleCard } from '@/components/ArticleCard';
-import { Article } from '@/types/article';
-import {GlobalStateContext} from "@/components/GlobalStateContext.tsx";
-import {Button} from "@/components/ui/button.tsx";
+import { GlobalStateContext } from "@/components/GlobalStateContext.tsx";
 
 const PopularFeed: React.FC = () => {
-    const {popularArticles, fetchMorePopularArticles} = useContext(GlobalStateContext);
-    const [page, setPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
+    const { popularArticles, hasMorePopular, fetchMorePopularArticles } = useContext(GlobalStateContext);
 
-    useEffect(() => {
-        fetchMorePopularArticles();
-    }, []);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastArticleRef = useCallback((node: HTMLElement | null) => {
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMorePopular) {
+                fetchMorePopularArticles();
+            }
+        });
+        if (node) observer.current.observe(node);
+    }, [fetchMorePopularArticles, hasMorePopular]);
 
     return (
         <div className="space-y-2">
-            {popularArticles.map(article => (
-                <ArticleCard key={article.uri} article={article} />
+            {popularArticles.map((article, index) => (
+                <ArticleCard
+                    key={article.uri}
+                    article={article}
+                    ref={index === popularArticles.length - 1 ? lastArticleRef : null}
+                />
             ))}
-            {hasMore && <Button onClick={() => setPage(page + 1)}>Load More</Button>}
         </div>
     );
 };

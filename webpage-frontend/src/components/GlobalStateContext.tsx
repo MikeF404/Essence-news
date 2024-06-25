@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useEffect, useState } from 'react';
 import axios from 'axios';
-import {Article} from "@/types/article.ts";
+import { Article } from "@/types/article.ts";
 
 interface GlobalStateContextProps {
     readArticlesCount: number;
@@ -10,13 +10,16 @@ interface GlobalStateContextProps {
     userId: string | null;
     setUserId: (userId: string) => void;
     popularArticles: Article[];
-    fetchPopularArticles: (page: number) => void;
+    hasMorePopular: boolean;
+    fetchPopularArticles: (page?: number) => void;
     fetchMorePopularArticles: () => void;
     personalizedArticles: Article[];
-    fetchPersonalizedArticles: (page: number) => void;
+    hasMorePersonalized: boolean;
+    fetchPersonalizedArticles: (page?: number) => void;
     fetchMorePersonalizedArticles: () => void;
     archivedArticles: Article[];
-    fetchArchivedArticles: (page: number) => void;
+    hasMoreArchived: boolean;
+    fetchArchivedArticles: (page?: number) => void;
     fetchMoreArchivedArticles: () => void;
 }
 
@@ -31,8 +34,11 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) =
     const [personalizedFeedEnabled, setPersonalizedFeedEnabled] = useState<boolean>(true);
     const [userId, setUserId] = useState<string | null>(null);
     const [popularArticles, setPopularArticles] = useState<Article[]>([]);
+    const [hasMorePopular, setHasMorePopular] = useState<boolean>(true);
     const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]);
+    const [hasMorePersonalized, setHasMorePersonalized] = useState<boolean>(true);
     const [archivedArticles, setArchivedArticles] = useState<Article[]>([]);
+    const [hasMoreArchived, setHasMoreArchived] = useState<boolean>(true);
     const [popularPage, setPopularPage] = useState<number>(0);
     const [personalizedPage, setPersonalizedPage] = useState<number>(0);
     const [archivedPage, setArchivedPage] = useState<number>(0);
@@ -65,38 +71,44 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) =
         }
     };
 
-    const fetchArticles = async (endpoint: string, page: number, setArticles: React.Dispatch<React.SetStateAction<Article[]>>, append: boolean = false) => {
+    const fetchArticles = async (endpoint: string, page: number, setArticles: React.Dispatch<React.SetStateAction<Article[]>>, setHasMore: React.Dispatch<React.SetStateAction<boolean>>, append: boolean = false) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/articles/${endpoint}?page=${page}&size=20`);
-            setArticles(prevArticles => append ? [...prevArticles, ...response.data.content] : response.data.content);
+            setArticles(prevArticles => {
+                const newArticles = response.data.content.filter((newArticle: Article) =>
+                    !prevArticles.some((prevArticle: Article) => prevArticle.uri === newArticle.uri)
+                );
+                return append ? [...prevArticles, ...newArticles] : newArticles;
+            });
+            setHasMore(response.data.content.length === 20);
         } catch (error) {
             console.error(`Error fetching ${endpoint} articles:`, error);
         }
     };
 
-    const fetchPopularArticles = (page: number = 0) => fetchArticles('popular', page, setPopularArticles);
+    const fetchPopularArticles = (page: number = 0) => fetchArticles('popular', page, setPopularArticles, setHasMorePopular);
     const fetchMorePopularArticles = () => {
         setPopularPage(prevPage => {
             const nextPage = prevPage + 1;
-            fetchPopularArticles(nextPage);
+            fetchArticles('popular', nextPage, setPopularArticles, setHasMorePopular, true);
             return nextPage;
         });
     };
 
-    const fetchPersonalizedArticles = (page: number = 0) => fetchArticles('personalized', page, setPersonalizedArticles);
+    const fetchPersonalizedArticles = (page: number = 0) => fetchArticles('personalized', page, setPersonalizedArticles, setHasMorePersonalized);
     const fetchMorePersonalizedArticles = () => {
         setPersonalizedPage(prevPage => {
             const nextPage = prevPage + 1;
-            fetchPersonalizedArticles(nextPage);
+            fetchArticles('personalized', nextPage, setPersonalizedArticles, setHasMorePersonalized, true);
             return nextPage;
         });
     };
 
-    const fetchArchivedArticles = (page: number = 0) => fetchArticles('archived', page, setArchivedArticles);
+    const fetchArchivedArticles = (page: number = 0) => fetchArticles('archived', page, setArchivedArticles, setHasMoreArchived);
     const fetchMoreArchivedArticles = () => {
         setArchivedPage(prevPage => {
             const nextPage = prevPage + 1;
-            fetchArchivedArticles(nextPage);
+            fetchArticles('archived', nextPage, setArchivedArticles, setHasMoreArchived, true);
             return nextPage;
         });
     };
@@ -116,12 +128,15 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) =
             userId,
             setUserId,
             popularArticles,
+            hasMorePopular,
             fetchPopularArticles,
             fetchMorePopularArticles,
             personalizedArticles,
+            hasMorePersonalized,
             fetchPersonalizedArticles,
             fetchMorePersonalizedArticles,
             archivedArticles,
+            hasMoreArchived,
             fetchArchivedArticles,
             fetchMoreArchivedArticles,
         }}>

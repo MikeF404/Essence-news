@@ -24,6 +24,7 @@ const Feed: React.FC<FeedProps> = ({ endpoint, articles, setArticles }) => {
         const response = await axios.get(endpoint +`?page=${page}&size=20`);
         if (response.data.content.length > 0) {
             setArticles(prevArticles => [...prevArticles, ...response.data.content]);
+            console.log(response.data.content);
         } else {
             setHasMore(false);
         }

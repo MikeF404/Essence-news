@@ -8,10 +8,9 @@ import PopularFeed from "@/components/PopularFeed.tsx";
 const AppRoutes: React.FC = () => {
     const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]);
     const [archivedArticles, setArchivedArticles] = useState<Article[]>([]);
-    const { updateReadArticlesCount } = useContext(GlobalStateContext)!;
+
     const userId = localStorage.getItem('essence-news-user-id');
 
-    updateReadArticlesCount();
     return (
         <Routes>
             <Route path="/popular" element={<PopularFeed/>} />
