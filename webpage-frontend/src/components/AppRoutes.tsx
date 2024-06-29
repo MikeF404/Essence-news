@@ -1,21 +1,16 @@
-import React, {useContext, useState} from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Feed from '@/components/Feed';
-import { Article } from '@/types/article';
-import {GlobalStateContext} from "@/components/GlobalStateContext.tsx";
 import PopularFeed from "@/components/PopularFeed.tsx";
+import PersonalizedFeed from "@/components/PersonalizedFeed.tsx";
+import ArchivedFeed from "@/components/ArchivedFeed.tsx";
 
 const AppRoutes: React.FC = () => {
-    const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]);
-    const [archivedArticles, setArchivedArticles] = useState<Article[]>([]);
-
-    const userId = localStorage.getItem('essence-news-user-id');
 
     return (
         <Routes>
             <Route path="/popular" element={<PopularFeed/>} />
-            <Route path="/personalized" element={<Feed endpoint={`http://localhost:8080/api/articles/relevant/${userId}/0`} articles={personalizedArticles} setArticles={setPersonalizedArticles} />} />
-            <Route path="/archived" element={<Feed endpoint={`http://localhost:8080/api/user/${userId}/read-articles`} articles={archivedArticles} setArticles={setArchivedArticles} />} />
+            <Route path="/personalized" element={<PersonalizedFeed/>} />
+            <Route path="/archived" element={<ArchivedFeed/>} />
             <Route path="/" element={<PopularFeed/>} />
         </Routes>
     );

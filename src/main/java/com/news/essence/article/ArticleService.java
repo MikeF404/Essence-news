@@ -48,7 +48,6 @@ public class ArticleService {
     private UserPreferenceService userPreferenceService;
     @Autowired
     private UserReadArticlesRepository userReadArticlesRepository;
-    private static final int PAGE_SIZE = 20;
     private final OpenAIClient openAIClient;
     @Autowired
     private UserService userService;
@@ -201,7 +200,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public List<ArticleDTO> getRelevantArticles(Long userId, int page) {
+    public List<ArticleDTO> getRelevantArticles(Long userId, int page, int size) {
         // Fetch user preferences
         List<UserPreference> preferences = userPreferenceService.getUserPreferences(userId);
         Map<Category, Double> userPreferences = preferences.stream()
@@ -220,8 +219,8 @@ public class ArticleService {
         // Sort articles by relevance
         List<Article> relevantArticles = filteredArticles.stream()
                 .sorted((a, b) -> Double.compare(computeRelevance(b, userPreferences), computeRelevance(a, userPreferences)))
-                .skip((long) page * PAGE_SIZE)
-                .limit(PAGE_SIZE)
+                .skip((long) page * size)
+                .limit(size)
                 .toList();
 
         List<ArticleDTO> list = relevantArticles.stream().map(ArticleDTO::new).collect(Collectors.toList());

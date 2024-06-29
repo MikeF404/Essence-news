@@ -26,7 +26,8 @@ public class ArticleController {
     @GetMapping("/popular")
     public ResponseEntity<Page<LightArticleDTO>> getPopularArticles(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "20") int size)
+    {
         Page<LightArticleDTO> articles = articleService.getRecentArticles(page, size);
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
@@ -38,7 +39,7 @@ public class ArticleController {
     }
 
     @GetMapping("/summary/{articleId}")
-    public String getSummary(@PathVariable Long articleId, @RequestHeader(value = "userId", required = false) Long userId){
+    public String getSummary(@PathVariable Long articleId, @RequestHeader(value = "userId", required = false) Long userId) {
 
         String summary = articleService.getArticleSummary(articleId);
 
@@ -49,21 +50,30 @@ public class ArticleController {
 
         return summary;
     }
+
     @GetMapping("/read/{articleId}")
-    public void logReading(@PathVariable Long articleId, @RequestHeader(value = "userId", required = false) Long userId){
+    public void logReading(
+            @PathVariable Long articleId,
+            @RequestHeader(value = "userId", required = false) Long userId)
+    {
         if (userId != null) {
             userReadArticlesService.logUserReadArticle(userId, articleId);
             userPreferenceService.updateUserPreference(userId, articleId, "read");
         }
     }
 
-    @GetMapping("/relevant/{userId}/{page}")
-    public List<ArticleDTO> getRelevantArticles(@PathVariable Long userId, @PathVariable int page) {
-        return articleService.getRelevantArticles(userId, page);
+    @GetMapping("/relevant/{userId}")
+    public List<ArticleDTO> getRelevantArticles(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size)
+    {
+        return articleService.getRelevantArticles(userId, page, size);
     }
 
     @PostMapping("/interact")
-    public void logInteraction(@RequestBody InteractionRequest request) {
+    public void logInteraction(@RequestBody InteractionRequest request)
+    {
         userPreferenceService.updateUserPreference(request.getUserId(), request.getArticleId(), request.getInteractionType());
     }
 

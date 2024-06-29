@@ -14,6 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     Article findTopByOrderByDateTimePubDesc();
-    @Query("SELECT a FROM Article a ORDER BY a.dateTimePub DESC")
+    @Query("SELECT DISTINCT a FROM Article a ORDER BY a.dateTimePub DESC")
     Page<Article> findRecentArticles(Pageable pageable);
 }

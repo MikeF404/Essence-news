@@ -8,10 +8,15 @@ import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hov
 
 
 const Header = () => {
+    const context = useContext(GlobalStateContext);
+    if (!context) {
+        throw new Error("GlobalStateContext must be used within a GlobalStateProvider");
+    }
+    const { readArticlesCount } = context;
+
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [currentTab, setCurrentTab] = useState('popular');
-    const { readArticlesCount } = useContext(GlobalStateContext);
 
     const handleScroll = () => {
         const currentScrollY = window.scrollY;
