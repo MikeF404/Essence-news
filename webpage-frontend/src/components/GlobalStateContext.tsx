@@ -48,11 +48,13 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) =
     };
 
     const updateReadArticlesCount = () => {
+        if (readArticlesCount >= 5) return;
         fetch(`http://localhost:8080/api/user/${userId}/read-articles`)
             .then(response => response.json())
             .then(data => {
-                setArchivedArticles(data);
+                //setArchivedArticles(data);
                 setReadArticlesCount(data.length);
+                console.log("updating the article count from DB: new count = "+ readArticlesCount+ "; while data.length = "+ data.length);
 
                 if (readArticlesCount >= 5) {
                     setPersonalizedFeedEnabled(false);

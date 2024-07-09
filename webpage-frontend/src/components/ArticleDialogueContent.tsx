@@ -19,15 +19,17 @@ type ArticleDialogueContentProps = {
 const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article, isOpen }) => {
     const [summary, setSummary] = useState<string | null>(article.summary);
     const [loading, setLoading] = useState<boolean>(!article.summary);
-    const { incrementReadArticlesCount } = useContext(GlobalStateContext)!;
+    const { updateReadArticlesCount } = useContext(GlobalStateContext)!;
 
     useEffect(() => {
         const fetchSummary = async () => {
+            if (!isOpen) return;
             const userId = localStorage.getItem('essence-news-user-id');
-            if (!article.summary && isOpen) {
+            
+
+            // if there is no summary - request it, otherwise make a "read" request to save the user interaction
+            if (!article.summary) {
                 setLoading(true);
-                article.viewCount++;
-                incrementReadArticlesCount();
                 try {
                     console.log("Requesting the summary from chatGPT...");
                     const response = await axios.get<string>(`http://localhost:8080/api/articles/summary/${article.uri}`, {
@@ -43,7 +45,18 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
                 } finally {
                     setLoading(false);
                 }
+            } else {
+                await axios.get(
+                  `http://localhost:8080/api/articles/read/${article.uri}`,
+                  {
+                    headers: {
+                      userId: userId || "",
+                    },
+                  }
+                );
             }
+            
+            updateReadArticlesCount();
         };
 
 
@@ -70,7 +83,7 @@ const ArticleDialogueContent: React.FC<ArticleDialogueContentProps> = ({ article
 
             {loading ? (
                 <div>
-                    <p>[summarizing the article using ChatGPT. It might take about 4 seconds]</p>
+                    <p>[summarizing the article using ChatGPT. It might take up to 4 seconds]</p>
                     <div className="flex flex-col space-y-4">
                         <div className="space-y-2">
                             <Skeleton className="h-4 w-[90%]" />

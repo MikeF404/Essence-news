@@ -1,6 +1,6 @@
 import React, {useContext, useRef, useCallback, useEffect, useState} from 'react';
 import { ArticleCard } from '@/components/ArticleCard';
-import { GlobalStateContext } from "@/components/GlobalStateContext.tsx";
+import { GlobalStateContext} from "@/components/GlobalStateContext.tsx";
 import axios from "axios";
 import {Article} from "@/types/article.ts";
 
@@ -9,7 +9,8 @@ const PopularFeed: React.FC = () => {
     if (!context) {
         throw new Error("GlobalStateContext must be used within a GlobalStateProvider");
     }
-    const { popularArticles, setPopularArticles} = context;
+    const { popularArticles, setPopularArticles, updateReadArticlesCount} =
+      context;
 
     let page = 0;
     const PAGE_SIZE = 20;
@@ -17,7 +18,9 @@ const PopularFeed: React.FC = () => {
     const observer = useRef<IntersectionObserver | null>(null);
 
     useEffect(() => {
+        
         if (!popularArticles || popularArticles.length === 0){
+            updateReadArticlesCount();
             loadArticles();
         }
     }, []);
